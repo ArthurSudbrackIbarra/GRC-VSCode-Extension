@@ -1,33 +1,57 @@
 import { execSync } from "child_process";
 
+export enum GRCErrorMessages {
+  grcNotInstalled = "GitHub Repository Creator (GRC) is not installed.",
+  unsupportedOS = "GitHub Repository Creator (GRC) is not supported on this OS.",
+}
+
 interface GRCExecutablePath {
   path: string | null;
   errorInfo: string | null;
 }
 
 export function getGRCExecutablePath(): GRCExecutablePath {
-  let osCommand = undefined;
   if (process.platform === "win32") {
-    osCommand = "where grc.bat";
+    try {
+      execSync("where grc.bat /Q");
+    } catch (error) {
+      console.error(error);
+      return {
+        path: null,
+        errorInfo: GRCErrorMessages.grcNotInstalled,
+      };
+    }
+    try {
+      const executablePath = execSync("where grc.bat").toString().trim();
+      return {
+        path: executablePath,
+        errorInfo: null,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        path: null,
+        errorInfo: GRCErrorMessages.grcNotInstalled,
+      };
+    }
   } else if (process.platform === "linux" || process.platform === "darwin") {
-    osCommand = "which grc";
+    try {
+      const executablePath = execSync("which grc").toString().trim();
+      return {
+        path: executablePath,
+        errorInfo: null,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        path: null,
+        errorInfo: GRCErrorMessages.grcNotInstalled,
+      };
+    }
   } else {
     return {
       path: null,
-      errorInfo: "Unsupported OS.",
-    };
-  }
-  try {
-    const executablePath = execSync(osCommand).toString().trim();
-    return {
-      path: executablePath,
-      errorInfo: null,
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      path: null,
-      errorInfo: "GRC is not installed.",
+      errorInfo: GRCErrorMessages.unsupportedOS,
     };
   }
 }
@@ -57,7 +81,7 @@ export function getGRCTemplates(): string[] | null {
     if (templates[0].toUpperCase().startsWith("NO ")) {
       return [];
     }
-    return templates;
+    return templates.filter((template) => template.includes(".yaml"));
   } catch (error) {
     console.error(error);
     return null;
@@ -92,7 +116,13 @@ export function getRepoURL(repoName: string): string | null {
     return null;
   }
   try {
-    return execSync(`${GRCCommands.getRepoURL} ${repoName}`).toString().trim();
+    const repositories = execSync(`${GRCCommands.getRepoURL} ${repoName}`)
+      .toString()
+      .trim()
+      .split("\n");
+    return repositories.filter((repository) =>
+      repository.startsWith("https://")
+    )[0];
   } catch (error) {
     console.error(error);
     return null;

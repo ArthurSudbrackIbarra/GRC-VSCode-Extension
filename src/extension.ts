@@ -1,5 +1,7 @@
 import * as vscode from "vscode";
 import {
+  GRCErrorMessages,
+  getGRCExecutablePath,
   getGRCTemplates,
   chooseTemplate,
   getRepoURL,
@@ -7,14 +9,49 @@ import {
   addCollaborator,
 } from "./grc/grc";
 
+const GRC_DOWNLOAD_URL =
+  "https://github.com/ArthurSudbrackIbarra/GitHub-Repo-Creator#installation-windows";
+
+function checkGRCInstallation() {
+  const grcExecutablePath = getGRCExecutablePath();
+  if (grcExecutablePath.path === null) {
+    const errorInfo = grcExecutablePath.errorInfo;
+    switch (errorInfo) {
+      case GRCErrorMessages.grcNotInstalled: {
+        vscode.window
+          .showErrorMessage(errorInfo, "Install GRC")
+          .then((answer) => {
+            if (answer) {
+              vscode.env.openExternal(vscode.Uri.parse(GRC_DOWNLOAD_URL));
+            }
+          });
+        break;
+      }
+      case GRCErrorMessages.unsupportedOS: {
+        vscode.window.showErrorMessage(errorInfo);
+        break;
+      }
+    }
+    return false;
+  }
+  return true;
+}
+
 export function activate(context: vscode.ExtensionContext) {
   console.log("GRC extension activated.");
-  // [COMMAND 1: Start Repository].
+  /*
+    Command 1: Start Repository.
+  */
   context.subscriptions.push(
     vscode.commands.registerCommand("grc.start-repository", async () => {
+      if (!checkGRCInstallation()) {
+        return;
+      }
       const templates = getGRCTemplates();
       if (templates === null) {
-        vscode.window.showErrorMessage("GRC is not installed.");
+        vscode.window.showErrorMessage(
+          "An unexpected error occurred. Try again later."
+        );
         return;
       }
       if (templates.length === 0) {
@@ -76,9 +113,14 @@ export function activate(context: vscode.ExtensionContext) {
       }
     })
   );
-  // [COMMAND 2: Add Collaborator].
+  /*
+    Command 2: Add Collaborator.
+  */
   context.subscriptions.push(
     vscode.commands.registerCommand("grc.add-collaborator", async () => {
+      if (!checkGRCInstallation()) {
+        return;
+      }
       const repoName = await vscode.window.showInputBox({
         placeHolder: "Enter the name of the remote repository:",
       });
@@ -114,4 +156,6 @@ export function activate(context: vscode.ExtensionContext) {
   );
 }
 
-export function deactivate() {}
+export function deactivate() {
+  console.log("GRC extension deactivated.");
+}
