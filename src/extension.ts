@@ -3,6 +3,7 @@ import {
   getGRCTemplates,
   chooseTemplate,
   getRepoURL,
+  availablePermissions,
   addCollaborator,
 } from "./grc/grc";
 
@@ -54,15 +55,20 @@ export function activate(context: vscode.ExtensionContext) {
       );
       if (created) {
         const repoURL = getRepoURL(repoName);
-        if (repoURL) {
-          vscode.window.showInformationMessage(
-            `Repository ${repoName} created. ${repoURL}.`
-          );
-        } else {
-          vscode.window.showInformationMessage(
-            `Repository ${repoName} created.`
-          );
+        if (!repoURL) {
+          vscode.window.showErrorMessage("Failed to get the repository URL.");
+          return;
         }
+        vscode.window
+          .showInformationMessage(
+            `Repository created successfully. ${repoURL}.`,
+            "Open in Browser"
+          )
+          .then((answer) => {
+            if (answer) {
+              vscode.env.openExternal(vscode.Uri.parse(repoURL));
+            }
+          });
       } else {
         vscode.window.showErrorMessage(
           `Failed to create repository ${repoName}.`
@@ -79,27 +85,29 @@ export function activate(context: vscode.ExtensionContext) {
       if (!repoName) {
         return;
       }
-      const collaborator = await vscode.window.showInputBox({
+      const collaboratorName = await vscode.window.showInputBox({
         placeHolder: "Enter the name of the collaborator:",
       });
-      if (!collaborator) {
+      if (!collaboratorName) {
         return;
       }
-      const permission = await vscode.window.showInputBox({
-        placeHolder:
-          "Enter the permission of the collaborator [admin, pull, push]:",
-      });
+      const permission = await vscode.window.showQuickPick(
+        availablePermissions,
+        {
+          placeHolder: `Choose the permission to give to ${collaboratorName}:`,
+        }
+      );
       if (!permission) {
         return;
       }
-      const added = addCollaborator(repoName, collaborator, permission);
+      const added = addCollaborator(repoName, collaboratorName, permission);
       if (added) {
         vscode.window.showInformationMessage(
-          `Collaborator ${collaborator} added to ${repoName}.`
+          `Collaborator ${collaboratorName} added to ${repoName}.`
         );
       } else {
         vscode.window.showErrorMessage(
-          `Failed to add ${collaborator} to ${repoName}.`
+          `Failed to add ${collaboratorName} to ${repoName}.`
         );
       }
     })

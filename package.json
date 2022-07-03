@@ -19,7 +19,7 @@
 			{
 				"command": "grc.start-repository",
 				"category": "GRC",
-				"title": "Start Repository."
+				"title": "Start GitHub Repository Here."
 			},
 			{
 				"command": "grc.add-collaborator",

@@ -75,7 +75,7 @@ export function chooseTemplate(
   }
   try {
     execSync(
-      `${GRCCommands.chooseTemplate} ${templateName} -n "${repoName}" -d "${repoDescription}"`,
+      `${GRCCommands.chooseTemplate} ${templateName} -n "${repoName}" -d "${repoDescription}" -i true`,
       {
         cwd: workingDirectory,
       }
@@ -99,6 +99,8 @@ export function getRepoURL(repoName: string): string | null {
   }
 }
 
+export const availablePermissions = ["admin", "push", "pull"];
+
 export function addCollaborator(
   repoName: string,
   collaborator: string,
@@ -107,10 +109,7 @@ export function addCollaborator(
   if (!isGRCInstalled()) {
     return false;
   }
-  if (
-    permission.length === 0 ||
-    !["admin", "pull", "push"].includes(permission)
-  ) {
+  if (permission.length === 0 || !availablePermissions.includes(permission)) {
     permission = "admin";
   }
   try {
