@@ -60,7 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
             } else if (installationStatus === GRCInstallationStatus.success) {
               vscode.window
                 .showInformationMessage(
-                  `${installationStatus} You need to restart VS Code for the changes to take effect.`,
+                  `${installationStatus} You need to restart VSCode for the changes to take effect.`,
                   "Close VSCode"
                 )
                 .then((answer) => {

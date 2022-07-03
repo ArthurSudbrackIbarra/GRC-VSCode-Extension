@@ -3,6 +3,7 @@
 	"displayName": "GitHub Repository Creator (GRC)",
 	"description": "Automatically create GitHub repositories using YAML templates.",
 	"version": "0.0.1",
+	"icon": "https://github.com/ArthurSudbrackIbarra/GRC-VSCode-Extension/blob/main/assets/grc-logo.png",
 	"engines": {
 		"vscode": "^1.68.0"
 	},
