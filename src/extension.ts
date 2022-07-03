@@ -1,5 +1,7 @@
 import * as vscode from "vscode";
 import {
+  installGRC,
+  GRCInstallationStatus,
   GRCErrorMessages,
   getGRCExecutablePath,
   getGRCTemplates,
@@ -8,9 +10,6 @@ import {
   availablePermissions,
   addCollaborator,
 } from "./grc/grc";
-
-const GRC_DOWNLOAD_URL =
-  "https://github.com/ArthurSudbrackIbarra/GitHub-Repo-Creator#installation-windows";
 
 function checkGRCInstallation() {
   const grcExecutablePath = getGRCExecutablePath();
@@ -22,7 +21,7 @@ function checkGRCInstallation() {
           .showErrorMessage(errorInfo, "Install GRC")
           .then((answer) => {
             if (answer) {
-              vscode.env.openExternal(vscode.Uri.parse(GRC_DOWNLOAD_URL));
+              vscode.commands.executeCommand("grc.install-grc");
             }
           });
         break;
@@ -40,7 +39,46 @@ function checkGRCInstallation() {
 export function activate(context: vscode.ExtensionContext) {
   console.log("GRC extension activated.");
   /*
-    Command 1: Start Repository.
+    Command 1: Install GRC.
+  */
+  context.subscriptions.push(
+    vscode.commands.registerCommand("grc.install-grc", () => {
+      vscode.window
+        .showOpenDialog({
+          canSelectFiles: false,
+          canSelectFolders: true,
+          canSelectMany: false,
+          openLabel: "Install GRC Here",
+          title: "Install GRC",
+        })
+        .then((folder) => {
+          if (folder) {
+            const targetDirectory = folder[0].fsPath;
+            const installationStatus = installGRC(targetDirectory);
+            if (installationStatus === GRCInstallationStatus.alreadyInstalled) {
+              vscode.window.showInformationMessage(installationStatus);
+            } else if (installationStatus === GRCInstallationStatus.success) {
+              vscode.window
+                .showInformationMessage(
+                  `${installationStatus} You need to restart VS Code for the changes to take effect.`,
+                  "Close VSCode"
+                )
+                .then((answer) => {
+                  if (answer) {
+                    vscode.commands.executeCommand(
+                      "workbench.action.closeWindow"
+                    );
+                  }
+                });
+            } else {
+              vscode.window.showErrorMessage(installationStatus);
+            }
+          }
+        });
+    })
+  );
+  /*
+    Command 2: Start Repository.
   */
   context.subscriptions.push(
     vscode.commands.registerCommand("grc.start-repository", async () => {
@@ -114,7 +152,7 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
   /*
-    Command 2: Add Collaborator.
+    Command 3: Add Collaborator.
   */
   context.subscriptions.push(
     vscode.commands.registerCommand("grc.add-collaborator", async () => {

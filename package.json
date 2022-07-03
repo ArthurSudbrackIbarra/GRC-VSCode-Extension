@@ -10,12 +10,18 @@
 		"Other"
 	],
 	"activationEvents": [
+		"onCommand:grc.install-grc",
 		"onCommand:grc.start-repository",
 		"onCommand:grc.add-collaborator"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
+			{
+				"command": "grc.install-grc",
+				"category": "GRC",
+				"title": "Install GRC."
+			},
 			{
 				"command": "grc.start-repository",
 				"category": "GRC",
