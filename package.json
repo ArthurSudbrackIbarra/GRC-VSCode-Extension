@@ -17,6 +17,7 @@
 		"Other"
 	],
 	"activationEvents": [
+		"onStartupFinished",
 		"onCommand:grc.install-grc",
 		"onCommand:grc.authenticate",
 		"onCommand:grc.start-repository",

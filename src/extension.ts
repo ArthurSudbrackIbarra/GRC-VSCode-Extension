@@ -1,9 +1,7 @@
 import * as vscode from "vscode";
+import { getGRCExecutablePath, GRCExecutableErrors } from "./grc/executable";
+import { installGRC, GRCInstallationStatus } from "./grc/installation";
 import {
-  installGRC,
-  GRCInstallationStatus,
-  GRCErrorMessages,
-  getGRCExecutablePath,
   isAuthenticated,
   authenticate,
   getGRCTemplates,
@@ -11,14 +9,15 @@ import {
   getRepoURL,
   availablePermissions,
   addCollaborator,
-} from "./grc/grc";
+  getUser,
+} from "./grc/commands";
 
 function checkGRCInstallation(): boolean {
   const grcExecutablePath = getGRCExecutablePath();
   if (grcExecutablePath.path === null) {
     const errorInfo = grcExecutablePath.errorInfo;
     switch (errorInfo) {
-      case GRCErrorMessages.grcNotInstalled: {
+      case GRCExecutableErrors.grcNotInstalled: {
         vscode.window
           .showErrorMessage(errorInfo, "Install GRC")
           .then((answer) => {
@@ -28,7 +27,7 @@ function checkGRCInstallation(): boolean {
           });
         break;
       }
-      case GRCErrorMessages.unsupportedOS: {
+      case GRCExecutableErrors.unsupportedOS: {
         vscode.window.showErrorMessage(errorInfo);
         break;
       }
@@ -55,8 +54,21 @@ function checkUserAthenticated(): boolean {
   return true;
 }
 
+function showUser(): void {
+  const user = getUser();
+  if (user) {
+    vscode.window.showInformationMessage(
+      `(GRC) Authenticated as ${user.name} - ${user.username}.`
+    );
+  }
+}
+
 export function activate(context: vscode.ExtensionContext) {
   console.log("GRC extension activated.");
+  /*
+    On Startup.
+  */
+  showUser();
   /*
     Command 1: Install GRC.
   */
@@ -113,7 +125,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
       const authenticated = authenticate(accessToken);
       if (authenticated) {
-        vscode.window.showInformationMessage("Authenticated successfully.");
+        showUser();
       } else {
         vscode.window.showErrorMessage("Authentication failed.");
       }
@@ -147,14 +159,15 @@ export function activate(context: vscode.ExtensionContext) {
       if (!templateName) {
         return;
       }
+      const user = getUser();
       const repoName = await vscode.window.showInputBox({
-        placeHolder: "Enter a name for the repository:",
+        placeHolder: `(${user?.name}) Enter a name for the repository:`,
       });
       if (!repoName) {
         return;
       }
       const repoDescription = await vscode.window.showInputBox({
-        placeHolder: "Enter a description for the repository:",
+        placeHolder: `(${user?.name}) Enter a description for the repository:`,
       });
       if (!repoDescription) {
         return;
@@ -181,7 +194,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
         vscode.window
           .showInformationMessage(
-            `Repository created successfully. ${repoURL}.`,
+            `Repository created successfully for account ${user?.name}: ${repoURL}.`,
             "Open in Browser"
           )
           .then((answer) => {
