@@ -1,6 +1,8 @@
 <h1 align="center">GRC VSCode Extension</h1>
 
 An extension for using [GRC](https://github.com/ArthurSudbrackIbarra/GitHub-Repo-Creator) inside Visual Studio Code. Automatically start GitHub repositories in your current workspace.
+
+**IMPORTANT**: This extension is only compatible with GRC version v3.0.1 or higher.
 <br/>
 
 ## Table of Contents
