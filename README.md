@@ -81,7 +81,7 @@ In order to use GRC extension, you need to have GRC installed in your machine. Y
 
 ## Known Issues
 
-This extension has not yet been tested well on Linux and MacOS operating systems, which means that eventual bugs may appear. If you find one, feel free to open an issue in the extension's repository or contact the extension publisher.
+This extension has not yet been tested well on Linux and MacOS operating systems, which means that eventual bugs may appear. If you find one, feel free to open an issue in the extension's repository or contact the extension's publisher (Arthur Sudbrack Ibarra).
 
 ## Release Notes
 
