@@ -1,6 +1,7 @@
-<h1 align="center">GitHub Repository Creator (GRC)</h1>
+<h1 align="center">GRC VSCode Extension</h1>
 
 An extension for using [GRC](https://github.com/ArthurSudbrackIbarra/GitHub-Repo-Creator) inside Visual Studio Code. Automatically start GitHub repositories in your current workspace.
+<br/>
 
 ## Table of Contents
 
@@ -17,7 +18,6 @@ An extension for using [GRC](https://github.com/ArthurSudbrackIbarra/GitHub-Repo
 
 Bellow, all the GRC extension features will be listed. To use GRC commands, press `ctrl` + `shift` + `p` or `⌘` + `shift` + `p` to open the command pallete.
 
-<br/>
 <p align="center">
     <img src="assets/readme-images/grc-commands.png" alt="GRC Commands">
 </p>
@@ -26,7 +26,6 @@ Bellow, all the GRC extension features will be listed. To use GRC commands, pres
 
 Use this command to add a collaborator to one of your remote GitHub repositories. You'll be asked to enter the repository name, the collaborator name and the permission of the collaborator.
 
-<br/>
 <p align="center">
     <img src="assets/readme-images/grc-add-collaborator.png" alt="GRC Add Collaborator">
 </p>
@@ -35,7 +34,6 @@ Use this command to add a collaborator to one of your remote GitHub repositories
 
 Use this command to install GRC in your machine in case you don't have it yet. You'll be asked to choose the directory where GRC will be installed.
 
-<br/>
 <p align="center">
     <img src="assets/readme-images/grc-install-grc.png" alt="GRC Install GRC">
 </p>
@@ -44,7 +42,6 @@ Use this command to install GRC in your machine in case you don't have it yet. Y
 
 Use this command to create a remote GitHub repository and then connect your current workspace to it. The extension will list your GRC templates and ask you to choose a template, as well as the repository name and the repository description.
 
-<br/>
 <p align="center">
     <img src="assets/readme-images/grc-start-repository.png" alt="Grc Start Repository">
 </p>
