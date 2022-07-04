@@ -9,12 +9,14 @@ An extension for using [GRC](https://github.com/ArthurSudbrackIbarra/GitHub-Repo
 - [Features](#features)
   - [GRC: Add Collaborator to Remote Repository](#grc-add-collaborator-to-remote-repository)
   - [GRC: Authenticate](#grc-authenticate)
+  - [GRC: Create Template](#grc-create-template)
   - [GRC: Install GRC](#grc-install-grc)
   - [GRC: Start GitHub Repository Here](#grc-start-github-repository-here)
 - [Requirements](#requirements)
 - [Known Issues](#known-issues)
 - [Release Notes](#release-notes)
   - [0.0.1](#001)
+  - [0.0.2](#002)
 
 ## Download
 
@@ -44,7 +46,7 @@ Use this command to authenticate to GitHub with GRC. You must use this command b
     <img src="assets/readme-images/grc-authenticate.png" alt="GRC Authenticate">
 </p>
 
-### GRC: Authenticate
+### GRC: Create Template
 
 Use this command to create a GRC template. Visual Studio Code will open a terminal instance and run the `grc temp generate` command for you.
 
