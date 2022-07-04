@@ -1,8 +1,6 @@
 import * as vscode from "vscode";
-import { getGRCExecutablePath, GRCExecutableErrors } from "./grc/executable";
 import { installGRC, GRCInstallationStatus } from "./grc/installation";
 import {
-  isAuthenticated,
   authenticate,
   getGRCTemplates,
   chooseTemplate,
@@ -11,61 +9,12 @@ import {
   addCollaborator,
   getUser,
 } from "./grc/commands";
-
-function checkGRCInstallation(): boolean {
-  const grcExecutablePath = getGRCExecutablePath();
-  if (grcExecutablePath.path === null) {
-    const errorInfo = grcExecutablePath.errorInfo;
-    switch (errorInfo) {
-      case GRCExecutableErrors.grcNotInstalled: {
-        vscode.window
-          .showErrorMessage(errorInfo, "Install GRC")
-          .then((answer) => {
-            if (answer) {
-              vscode.commands.executeCommand("grc.install-grc");
-            }
-          });
-        break;
-      }
-      case GRCExecutableErrors.unsupportedOS: {
-        vscode.window.showErrorMessage(errorInfo);
-        break;
-      }
-    }
-    return false;
-  }
-  return true;
-}
-
-function checkUserAthenticated(): boolean {
-  if (!isAuthenticated()) {
-    vscode.window
-      .showErrorMessage(
-        "You are not authenticated with GRC. Please authenticate first.",
-        "Authenticate"
-      )
-      .then((answer) => {
-        if (answer) {
-          vscode.commands.executeCommand("grc.authenticate");
-        }
-      });
-    return false;
-  }
-  return true;
-}
-
-function showAuthMessage(onlyOnFailure: boolean = false): void {
-  const user = getUser();
-  if (user && !onlyOnFailure) {
-    vscode.window.showInformationMessage(
-      `(GRC) Authenticated as ${user.name} - ${user.username}.`
-    );
-  } else if (!user) {
-    vscode.window.showErrorMessage(
-      "(GRC) Authentication failed, your access token might have changed or expired."
-    );
-  }
-}
+import {
+  checkGRCInstallation,
+  checkIfAlreadyGitRepository,
+  checkUserAthenticated,
+} from "./utils/checks";
+import { getWorkingDirectory, showAuthMessage } from "./utils/other";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log("GRC extension activated.");
@@ -148,10 +97,16 @@ export function activate(context: vscode.ExtensionContext) {
       if (!checkUserAthenticated()) {
         return;
       }
+      if (checkIfAlreadyGitRepository()) {
+        vscode.window.showErrorMessage(
+          "Error: Your current directory is already a git repository."
+        );
+        return;
+      }
       const templates = getGRCTemplates();
       if (templates === null) {
         vscode.window.showErrorMessage(
-          "An unexpected error occurred. Try again later."
+          "Error: An unexpected error occurred. Try again later."
         );
         return;
       }
@@ -178,13 +133,10 @@ export function activate(context: vscode.ExtensionContext) {
       if (!repoDescription) {
         return;
       }
-      if (!vscode.workspace.workspaceFolders) {
-        vscode.window.showErrorMessage("No workspace folder found.");
+      const workingDirectory = getWorkingDirectory();
+      if (!workingDirectory) {
+        vscode.window.showErrorMessage("Error: No workspace folder found.");
         return;
-      }
-      let workingDirectory = vscode.workspace.workspaceFolders[0].uri.path;
-      if (workingDirectory.startsWith("/") && process.platform === "win32") {
-        workingDirectory = workingDirectory.substring(1);
       }
       const created = chooseTemplate(
         templateName,
@@ -195,7 +147,9 @@ export function activate(context: vscode.ExtensionContext) {
       if (created) {
         const repoURL = getRepoURL(repoName);
         if (!repoURL) {
-          vscode.window.showErrorMessage("Failed to get the repository URL.");
+          vscode.window.showErrorMessage(
+            "Error: Failed to get the repository URL."
+          );
           return;
         }
         vscode.window
@@ -210,7 +164,7 @@ export function activate(context: vscode.ExtensionContext) {
           });
       } else {
         vscode.window.showErrorMessage(
-          `Failed to create repository ${repoName}.`
+          `Error: Failed to create repository ${repoName}.`
         );
       }
     })
@@ -254,7 +208,7 @@ export function activate(context: vscode.ExtensionContext) {
         );
       } else {
         vscode.window.showErrorMessage(
-          `Failed to add ${collaboratorName} to ${repoName}.`
+          `Error: Failed to add ${collaboratorName} to ${repoName}.`
         );
       }
     })

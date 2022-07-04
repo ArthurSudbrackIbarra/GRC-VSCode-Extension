@@ -8,7 +8,7 @@ export function isGRCInstalled(): boolean {
 export enum GRCInstallationStatus {
   alreadyInstalled = "GitHub Repository Creator (GRC) is already installed.",
   success = "GitHub Repository Creator (GRC) was installed successfully.",
-  error = "Could not install GitHub Repository Creator (GRC).",
+  error = "Error: Could not install GitHub Repository Creator (GRC).",
 }
 
 const GRC_DOWNLOAD_URL_WINDOWS =

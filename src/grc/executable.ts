@@ -1,8 +1,8 @@
 import { execSync } from "child_process";
 
 export enum GRCExecutableErrors {
-  grcNotInstalled = "GitHub Repository Creator (GRC) is not installed.",
-  unsupportedOS = "GitHub Repository Creator (GRC) is not supported on this OS.",
+  grcNotInstalled = "Error: GitHub Repository Creator (GRC) is not installed.",
+  unsupportedOS = "Error: GitHub Repository Creator (GRC) is not supported on this OS.",
 }
 
 interface GRCExecutablePath {
