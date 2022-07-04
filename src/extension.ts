@@ -128,7 +128,7 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
       const repoDescription = await vscode.window.showInputBox({
-        placeHolder: `(${user?.name}) Enter a description for the repository:`,
+        placeHolder: "Enter a description for the repository:",
       });
       if (!repoDescription) {
         return;
@@ -180,8 +180,9 @@ export function activate(context: vscode.ExtensionContext) {
       if (!checkUserAthenticated()) {
         return;
       }
+      const user = getUser();
       const repoName = await vscode.window.showInputBox({
-        placeHolder: "Enter the name of the remote repository:",
+        placeHolder: `(${user?.username}) Enter the name of the remote repository:`,
       });
       if (!repoName) {
         return;

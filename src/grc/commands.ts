@@ -48,16 +48,21 @@ interface GitHubUser {
   avatarURL: string;
 }
 
+let user: GitHubUser | null = null;
+
 export function getUser(): GitHubUser | null {
   if (!isGRCInstalled() || !isAuthenticated()) {
     return null;
+  }
+  if (user) {
+    return user;
   }
   try {
     const userInfoLines = execSync(GRCCommands.userInfo)
       .toString()
       .trim()
       .split("\n");
-    const user: GitHubUser = {
+    user = {
       username: "",
       email: "",
       name: "",
