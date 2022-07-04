@@ -7,6 +7,7 @@ An extension for using [GRC](https://github.com/ArthurSudbrackIbarra/GitHub-Repo
 
 - [Features](#features)
   - [GRC: Add Collaborator to Remote Repository](#grc-add-collaborator-to-remote-repository)
+  - [GRC: Authenticate](#grc-authenticate)
   - [GRC: Install GRC](#grc-install-grc)
   - [GRC: Start GitHub Repository Here](#grc-start-github-repository-here)
 - [Requirements](#requirements)
@@ -28,6 +29,14 @@ Use this command to add a collaborator to one of your remote GitHub repositories
 
 <p align="center">
     <img src="assets/readme-images/grc-add-collaborator.png" alt="GRC Add Collaborator">
+</p>
+
+### GRC: Authenticate
+
+Use this command to authenticate to GitHub with GRC. You must use this command before using any other commands that involve interaction with your GitHub account.
+
+<p align="center">
+    <img src="assets/readme-images/grc-authenticate.png" alt="GRC Authenticate">
 </p>
 
 ### GRC: Install GRC

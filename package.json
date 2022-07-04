@@ -8,7 +8,7 @@
 	"publisher": "Arthur Sudbrack Ibarra",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/ArthurSudbrackIbarra"
+		"url": "https://github.com/ArthurSudbrackIbarra/GRC-VSCode-Extension"
 	},
 	"engines": {
 		"vscode": "^1.68.0"
@@ -18,6 +18,7 @@
 	],
 	"activationEvents": [
 		"onCommand:grc.install-grc",
+		"onCommand:grc.authenticate",
 		"onCommand:grc.start-repository",
 		"onCommand:grc.add-collaborator"
 	],
@@ -28,6 +29,11 @@
 				"command": "grc.install-grc",
 				"category": "GRC",
 				"title": "Install GRC."
+			},
+			{
+				"command": "grc.authenticate",
+				"category": "GRC",
+				"title": "Authenticate."
 			},
 			{
 				"command": "grc.start-repository",

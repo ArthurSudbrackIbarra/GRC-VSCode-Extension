@@ -112,10 +112,33 @@ export function installGRC(targetDirectory: string): GRCInstallationStatus {
 // GRC Commands.
 
 class GRCCommands {
+  static readonly authenticate = `${grcExecutablePath.path} authenticate`;
   static readonly listTemplates = `${grcExecutablePath.path} temp list`;
   static readonly chooseTemplate = `${grcExecutablePath.path} temp choose`;
   static readonly getRepoURL = `${grcExecutablePath.path} remote url`;
   static readonly addCollaborator = `${grcExecutablePath.path} remote add-collab`;
+}
+
+export function isAuthenticated(): boolean {
+  try {
+    const result = execSync(`${GRCCommands.getRepoURL} XXXXX`)
+      .toString()
+      .trim();
+    return !result.toUpperCase().includes("NOT AUTHENTICATED");
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+export function authenticate(accessToken: string): boolean {
+  try {
+    const result = execSync(`${GRCCommands.authenticate} ${accessToken}`);
+    return !result.toString().toUpperCase().includes("ERROR");
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 }
 
 export function getGRCTemplates(): string[] | null {

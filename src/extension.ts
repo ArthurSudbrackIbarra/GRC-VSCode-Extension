@@ -4,6 +4,8 @@ import {
   GRCInstallationStatus,
   GRCErrorMessages,
   getGRCExecutablePath,
+  isAuthenticated,
+  authenticate,
   getGRCTemplates,
   chooseTemplate,
   getRepoURL,
@@ -11,7 +13,7 @@ import {
   addCollaborator,
 } from "./grc/grc";
 
-function checkGRCInstallation() {
+function checkGRCInstallation(): boolean {
   const grcExecutablePath = getGRCExecutablePath();
   if (grcExecutablePath.path === null) {
     const errorInfo = grcExecutablePath.errorInfo;
@@ -31,6 +33,23 @@ function checkGRCInstallation() {
         break;
       }
     }
+    return false;
+  }
+  return true;
+}
+
+function checkUserAthenticated(): boolean {
+  if (!isAuthenticated()) {
+    vscode.window
+      .showErrorMessage(
+        "You are not authenticated with GRC. Please authenticate first.",
+        "Authenticate"
+      )
+      .then((answer) => {
+        if (answer) {
+          vscode.commands.executeCommand("grc.authenticate");
+        }
+      });
     return false;
   }
   return true;
@@ -78,11 +97,37 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
   /*
-    Command 2: Start Repository.
+    Command 2: Authenticate.
+  */
+  context.subscriptions.push(
+    vscode.commands.registerCommand("grc.authenticate", async () => {
+      if (!checkGRCInstallation()) {
+        return;
+      }
+      const accessToken = await vscode.window.showInputBox({
+        prompt: "Enter your GitHub access token:",
+        password: true,
+      });
+      if (!accessToken) {
+        return;
+      }
+      const authenticated = authenticate(accessToken);
+      if (authenticated) {
+        vscode.window.showInformationMessage("Authenticated successfully.");
+      } else {
+        vscode.window.showErrorMessage("Authentication failed.");
+      }
+    })
+  );
+  /*
+    Command 3: Start Repository.
   */
   context.subscriptions.push(
     vscode.commands.registerCommand("grc.start-repository", async () => {
       if (!checkGRCInstallation()) {
+        return;
+      }
+      if (!checkUserAthenticated()) {
         return;
       }
       const templates = getGRCTemplates();
@@ -152,11 +197,14 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
   /*
-    Command 3: Add Collaborator.
+    Command 4: Add Collaborator.
   */
   context.subscriptions.push(
     vscode.commands.registerCommand("grc.add-collaborator", async () => {
       if (!checkGRCInstallation()) {
+        return;
+      }
+      if (!checkUserAthenticated()) {
         return;
       }
       const repoName = await vscode.window.showInputBox({
