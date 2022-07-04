@@ -69,4 +69,4 @@ GRC release notes:
 
 ### 0.0.1
 
-Added Add Collaborator, Install GRC and Start Repository commands.
+Added Add Collaborator, Authenticate, Install GRC and Start Repository commands.
