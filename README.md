@@ -109,5 +109,5 @@ User Experience:
 
 Technical Changes:
 
-- More robust validations. GRC is installed, GRC version is correct, user is authenticated.
+- More robust validations. GRC is installed, GRC version is correct, user is authenticated, workspace is not already a git repository.
 - Better source code folders and files structuring.
