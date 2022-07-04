@@ -54,11 +54,15 @@ function checkUserAthenticated(): boolean {
   return true;
 }
 
-function showUser(): void {
+function showAuthMessage(onlyOnFailure: boolean = false): void {
   const user = getUser();
-  if (user) {
+  if (user && !onlyOnFailure) {
     vscode.window.showInformationMessage(
       `(GRC) Authenticated as ${user.name} - ${user.username}.`
+    );
+  } else if (!user) {
+    vscode.window.showErrorMessage(
+      "(GRC) Authentication failed, your access token might have changed or expired."
     );
   }
 }
@@ -68,7 +72,7 @@ export function activate(context: vscode.ExtensionContext) {
   /*
     On Startup.
   */
-  showUser();
+  showAuthMessage(true);
   /*
     Command 1: Install GRC.
   */
@@ -125,9 +129,11 @@ export function activate(context: vscode.ExtensionContext) {
       }
       const authenticated = authenticate(accessToken);
       if (authenticated) {
-        showUser();
+        showAuthMessage();
       } else {
-        vscode.window.showErrorMessage("Authentication failed.");
+        vscode.window.showErrorMessage(
+          "(GRC) Authentication failed. Your access token is invalid."
+        );
       }
     })
   );
