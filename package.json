@@ -4,8 +4,8 @@
 	"description": "Automatically create GitHub repositories using YAML templates.",
 	"version": "0.0.1",
 	"author": "Arthur Sudbrack Ibarra",
-	"icon": "https://github.com/ArthurSudbrackIbarra/GRC-VSCode-Extension/blob/main/assets/grc-logo.png?raw=true",
-	"publisher": "Arthur Sudbrack Ibarra",
+	"icon": "assets/grc-logo.png",
+	"publisher": "ArthurSudbrackIbarra",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/ArthurSudbrackIbarra/GRC-VSCode-Extension"
