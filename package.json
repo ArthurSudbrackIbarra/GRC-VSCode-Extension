@@ -21,6 +21,7 @@
 		"onCommand:grc.install-grc",
 		"onCommand:grc.authenticate",
 		"onCommand:grc.start-repository",
+		"onCommand:grc.create-template",
 		"onCommand:grc.add-collaborator"
 	],
 	"main": "./out/extension.js",
@@ -40,6 +41,11 @@
 				"command": "grc.start-repository",
 				"category": "GRC",
 				"title": "Start GitHub Repository Here."
+			},
+			{
+				"command": "grc.create-template",
+				"category": "GRC",
+				"title": "Create GRC Template."
 			},
 			{
 				"command": "grc.add-collaborator",

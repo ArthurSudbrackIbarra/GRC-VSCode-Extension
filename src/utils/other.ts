@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { getUser } from "../grc/commands";
+import { isGRCInstalled } from "../grc/installation";
 
 export function getWorkingDirectory(): string | null {
   if (!vscode.workspace.workspaceFolders) {
@@ -18,7 +19,7 @@ export function showAuthMessage(onlyOnFailure: boolean = false): void {
     vscode.window.showInformationMessage(
       `(GRC) Authenticated as ${user.name} - ${user.username}.`
     );
-  } else if (!user) {
+  } else if (!user && isGRCInstalled()) {
     vscode.window.showErrorMessage(
       "(GRC) Authentication failed, your access token might have changed or expired."
     );

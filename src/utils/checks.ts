@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { existsSync } from "fs";
 import { join } from "path";
 import { getGRCExecutablePath, GRCExecutableErrors } from "../grc/executable";
-import { isAuthenticated } from "../grc/commands";
+import { getGRCVersion, isAuthenticated, updateGRC } from "../grc/commands";
 import { getWorkingDirectory } from "./other";
 
 export function checkGRCInstallation(): boolean {
@@ -40,6 +40,33 @@ export function checkUserAthenticated(): boolean {
       .then((answer) => {
         if (answer) {
           vscode.commands.executeCommand("grc.authenticate");
+        }
+      });
+    return false;
+  }
+  return true;
+}
+
+const VALID_GRC_VERSION = "v3.0.2";
+
+export function checkGRCVersion(): boolean {
+  const grcVersion = getGRCVersion();
+  if (!grcVersion || grcVersion.toLowerCase() !== VALID_GRC_VERSION) {
+    vscode.window
+      .showErrorMessage(
+        `Error: GRC version is not supported. Expected: ${VALID_GRC_VERSION}, Actual: ${grcVersion}.`,
+        "Update GRC"
+      )
+      .then((answer) => {
+        if (answer) {
+          const updated = updateGRC();
+          if (updated) {
+            vscode.window.showInformationMessage(`GRC version updated.`);
+          } else {
+            vscode.window.showErrorMessage(
+              `Error: GRC version could not be updated.`
+            );
+          }
         }
       });
     return false;

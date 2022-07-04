@@ -2,15 +2,17 @@ import * as vscode from "vscode";
 import { installGRC, GRCInstallationStatus } from "./grc/installation";
 import {
   authenticate,
-  getGRCTemplates,
+  getTemplates,
   chooseTemplate,
   getRepoURL,
   availablePermissions,
   addCollaborator,
   getUser,
+  createTemplate,
 } from "./grc/commands";
 import {
   checkGRCInstallation,
+  checkGRCVersion,
   checkIfAlreadyGitRepository,
   checkUserAthenticated,
 } from "./utils/checks";
@@ -69,6 +71,9 @@ export function activate(context: vscode.ExtensionContext) {
       if (!checkGRCInstallation()) {
         return;
       }
+      if (!checkGRCVersion()) {
+        return;
+      }
       const accessToken = await vscode.window.showInputBox({
         prompt: "Enter your GitHub access token:",
         password: true,
@@ -94,6 +99,9 @@ export function activate(context: vscode.ExtensionContext) {
       if (!checkGRCInstallation()) {
         return;
       }
+      if (!checkGRCVersion()) {
+        return;
+      }
       if (!checkUserAthenticated()) {
         return;
       }
@@ -103,7 +111,7 @@ export function activate(context: vscode.ExtensionContext) {
         );
         return;
       }
-      const templates = getGRCTemplates();
+      const templates = getTemplates();
       if (templates === null) {
         vscode.window.showErrorMessage(
           "Error: An unexpected error occurred. Try again later."
@@ -170,11 +178,28 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
   /*
-    Command 4: Add Collaborator.
+    Command 4: Create Template.
+  */
+  context.subscriptions.push(
+    vscode.commands.registerCommand("grc.create-template", () => {
+      if (!checkGRCInstallation()) {
+        return;
+      }
+      if (!checkGRCVersion()) {
+        return;
+      }
+      createTemplate();
+    })
+  );
+  /*
+    Command 5: Add Collaborator.
   */
   context.subscriptions.push(
     vscode.commands.registerCommand("grc.add-collaborator", async () => {
       if (!checkGRCInstallation()) {
+        return;
+      }
+      if (!checkGRCVersion()) {
         return;
       }
       if (!checkUserAthenticated()) {

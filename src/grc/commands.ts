@@ -1,14 +1,20 @@
+import * as vscode from "vscode";
 import { execSync } from "child_process";
+import { readdirSync } from "fs";
+import { join } from "path";
 import { grcExecutablePath } from "./executable";
 import { isGRCInstalled } from "./installation";
 
 class GRCCommands {
-  static readonly authenticate = `${grcExecutablePath.path} authenticate`;
-  static readonly userInfo = `${grcExecutablePath.path} user`;
-  static readonly listTemplates = `${grcExecutablePath.path} temp list`;
-  static readonly chooseTemplate = `${grcExecutablePath.path} temp choose`;
-  static readonly getRepoURL = `${grcExecutablePath.path} remote url`;
-  static readonly addCollaborator = `${grcExecutablePath.path} remote add-collab`;
+  static readonly authenticate = `"${grcExecutablePath.path}" authenticate`;
+  static readonly getVersion = `"${grcExecutablePath.path}" version`;
+  static readonly update = `"${grcExecutablePath.path}" update`;
+  static readonly userInfo = `"${grcExecutablePath.path}" user`;
+  static readonly chooseTemplate = `"${grcExecutablePath.path}" temp choose`;
+  // generateTemplate is applied directly to the user terminal.
+  static readonly generateTemplate = "grc temp generate";
+  static readonly getRepoURL = `"${grcExecutablePath.path}" remote url`;
+  static readonly addCollaborator = `"${grcExecutablePath.path}" remote add-collab`;
 }
 
 /*
@@ -16,10 +22,11 @@ class GRCCommands {
 */
 
 export function isAuthenticated(): boolean {
+  if (!isGRCInstalled()) {
+    return false;
+  }
   try {
-    const result = execSync(`${GRCCommands.getRepoURL} XXXXX`)
-      .toString()
-      .trim();
+    const result = execSync(`${GRCCommands.getRepoURL} XYZ`).toString().trim();
     return !result.toUpperCase().includes("NOT AUTHENTICATED");
   } catch (error) {
     console.error(error);
@@ -28,8 +35,53 @@ export function isAuthenticated(): boolean {
 }
 
 export function authenticate(accessToken: string): boolean {
+  if (!isGRCInstalled()) {
+    return false;
+  }
   try {
     const result = execSync(`${GRCCommands.authenticate} ${accessToken}`);
+    return !result.toString().toUpperCase().includes("ERROR");
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+/*
+  Version.
+*/
+
+export function getGRCVersion(): string | null {
+  if (!isGRCInstalled()) {
+    return null;
+  }
+  try {
+    const versionLines = execSync(GRCCommands.getVersion)
+      .toString()
+      .trim()
+      .split("\n");
+    for (const line of versionLines) {
+      if (line.toUpperCase().includes("GRC VERSION")) {
+        return line.split(" ")[2];
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+/*
+  Update.
+*/
+
+export function updateGRC(): boolean {
+  if (!isGRCInstalled()) {
+    return false;
+  }
+  try {
+    const result = execSync(GRCCommands.update);
     return !result.toString().toUpperCase().includes("ERROR");
   } catch (error) {
     console.error(error);
@@ -104,19 +156,15 @@ export function getUser(): GitHubUser | null {
   Templates.
 */
 
-export function getGRCTemplates(): string[] | null {
-  if (!isGRCInstalled()) {
+export function getTemplates(): string[] | null {
+  if (!isGRCInstalled() || !grcExecutablePath.path) {
     return null;
   }
+  const templatesPath = join(grcExecutablePath.path, "..", "templates");
   try {
-    const templates = execSync(GRCCommands.listTemplates)
-      .toString()
-      .trim()
-      .split("\n");
-    if (templates[0].toUpperCase().startsWith("NO ")) {
-      return [];
-    }
-    return templates.filter((template) => template.includes(".yaml"));
+    return readdirSync(templatesPath).filter((fileName) =>
+      fileName.endsWith(".yaml")
+    );
   } catch (error) {
     console.error(error);
     return null;
@@ -129,7 +177,7 @@ export function chooseTemplate(
   repoDescription: string,
   workingDirectory: string
 ): boolean {
-  if (!isGRCInstalled()) {
+  if (!isGRCInstalled() || !isAuthenticated()) {
     return false;
   }
   try {
@@ -146,12 +194,24 @@ export function chooseTemplate(
   }
 }
 
+export function createTemplate(): boolean {
+  if (!isGRCInstalled() || !grcExecutablePath.path) {
+    return false;
+  }
+  const terminal = vscode.window.createTerminal({
+    name: "Generate GRC Template",
+  });
+  terminal.sendText(GRCCommands.generateTemplate);
+  terminal.show();
+  return true;
+}
+
 /*
   Repository.
 */
 
 export function getRepoURL(repoName: string): string | null {
-  if (!isGRCInstalled()) {
+  if (!isGRCInstalled() || !isAuthenticated()) {
     return null;
   }
   try {
@@ -175,7 +235,7 @@ export function addCollaborator(
   collaborator: string,
   permission: string
 ): boolean {
-  if (!isGRCInstalled()) {
+  if (!isGRCInstalled() || !isAuthenticated()) {
     return false;
   }
   if (permission.length === 0 || !availablePermissions.includes(permission)) {

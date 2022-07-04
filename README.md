@@ -1,8 +1,6 @@
 <h1 align="center">GRC VSCode Extension</h1>
 
 An extension for using [GRC](https://github.com/ArthurSudbrackIbarra/GitHub-Repo-Creator) inside Visual Studio Code. Automatically start GitHub repositories in your current workspace.
-
-**IMPORTANT**: This extension is only compatible with GRC version v3.0.1 or higher.
 <br/>
 
 ## Table of Contents
@@ -17,7 +15,7 @@ An extension for using [GRC](https://github.com/ArthurSudbrackIbarra/GitHub-Repo
 - [Known Issues](#known-issues)
 - [Release Notes](#release-notes)
   - [0.0.1](#001)
-  
+
 ## Download
 
 You can download GRC extension here: https://marketplace.visualstudio.com/items?itemName=ArthurSudbrackIbarra.grc.
@@ -46,6 +44,14 @@ Use this command to authenticate to GitHub with GRC. You must use this command b
     <img src="assets/readme-images/grc-authenticate.png" alt="GRC Authenticate">
 </p>
 
+### GRC: Authenticate
+
+Use this command to create a GRC template. Visual Studio Code will open a terminal instance and run the `grc temp generate` command for you.
+
+<p align="center">
+    <img src="assets/readme-images/grc-create-template.png" alt="GRC Create Template">
+</p>
+
 ### GRC: Install GRC
 
 Use this command to install GRC in your machine in case you don't have it yet. You'll be asked to choose the directory where GRC will be installed.
@@ -66,9 +72,14 @@ Use this command to create a remote GitHub repository and then connect your curr
 
 In order to use GRC extension, you need to have GRC installed in your machine. You can download it by using the [install-grc](#grc-install-grc) command or by following the [installation guide](https://github.com/ArthurSudbrackIbarra/GitHub-Repo-Creator#installation-windows) of the official GRC repository.
 
+| GRC Version | Compatible GRC Extension Version |
+| :---------: | :------------------------------: |
+|   v3.0.1    |              v0.0.1              |
+|   v3.0.2    |              v0.0.2              |
+
 ## Known Issues
 
-None yet.
+This extension has not yet been tested well on Linux and MacOS operating systems, which means that eventual bugs may appear. If you find one, feel free to open an issue in the extension's repository or contact the extension publisher.
 
 ## Release Notes
 
@@ -76,4 +87,25 @@ GRC release notes:
 
 ### 0.0.1
 
-Added Add Collaborator, Authenticate, Install GRC and Start Repository commands.
+Commands added:
+
+- Add Collaborator
+- Authenticate
+- Install GRC
+- Start Repository commands.
+
+### 0.0.2
+
+Commands added:
+
+- Create GRC Template
+
+User Experience:
+
+- Added possibility to update GRC through the extension.
+- Better feedback regarding the user being authenticated or not.
+
+Technical Changes:
+
+- More robust validations. GRC is installed, GRC version is correct, user is authenticated.
+- Better source code folders and files structuring.

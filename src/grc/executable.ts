@@ -22,10 +22,21 @@ export function getGRCExecutablePath(): GRCExecutablePath {
       };
     }
     try {
-      const executablePath = execSync("where grc.bat").toString().trim();
+      const executablePaths = execSync("where grc.bat")
+        .toString()
+        .trim()
+        .split("\n");
+      for (const executablePath of executablePaths) {
+        if (executablePath.toUpperCase().includes("GITHUB-REPO-CREATOR")) {
+          return {
+            path: executablePath,
+            errorInfo: null,
+          };
+        }
+      }
       return {
-        path: executablePath,
-        errorInfo: null,
+        path: null,
+        errorInfo: GRCExecutableErrors.grcNotInstalled,
       };
     } catch (error) {
       console.error(error);
@@ -36,10 +47,21 @@ export function getGRCExecutablePath(): GRCExecutablePath {
     }
   } else if (process.platform === "linux" || process.platform === "darwin") {
     try {
-      const executablePath = execSync("which grc").toString().trim();
+      const executablePaths = execSync("which grc")
+        .toString()
+        .trim()
+        .split("\n");
+      for (const executablePath of executablePaths) {
+        if (executablePath.toUpperCase().includes("GITHUB-REPO-CREATOR")) {
+          return {
+            path: executablePath,
+            errorInfo: null,
+          };
+        }
+      }
       return {
-        path: executablePath,
-        errorInfo: null,
+        path: null,
+        errorInfo: GRCExecutableErrors.grcNotInstalled,
       };
     } catch (error) {
       console.error(error);
