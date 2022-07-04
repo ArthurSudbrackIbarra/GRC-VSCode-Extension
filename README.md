@@ -1,70 +1,66 @@
-# grc README
+<h1 align="center">GitHub Repository Creator (GRC)</h1>
 
-This is the README for your extension "grc". After writing up a brief description, we recommend including the following sections.
+An extension for using [GRC](https://github.com/ArthurSudbrackIbarra/GitHub-Repo-Creator) inside Visual Studio Code. Automatically start GitHub repositories in your current workspace.
+
+## Table of Contents
+
+- [Features](#features)
+  - [GRC: Add Collaborator to Remote Repository](#grc-add-collaborator-to-remote-repository)
+  - [GRC: Install GRC](#grc-install-grc)
+  - [GRC: Start GitHub Repository Here](#grc-start-github-repository-here)
+- [Requirements](#requirements)
+- [Known Issues](#known-issues)
+- [Release Notes](#release-notes)
+  - [0.0.1](#001)
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Bellow, all the GRC extension features will be listed. To use GRC commands, press `ctrl` + `shift` + `p` or `⌘` + `shift` + `p` to open the command pallete.
 
-For example if there is an image subfolder under your extension project workspace:
+<br/>
+<p align="center">
+    <img src="assets/readme-images/grc-commands.png" alt="GRC Commands">
+</p>
 
-\!\[feature X\]\(images/feature-x.png\)
+### GRC: Add Collaborator to Remote Repository
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+Use this command to add a collaborator to one of your remote GitHub repositories. You'll be asked to enter the repository name, the collaborator name and the permission of the collaborator.
+
+<br/>
+<p align="center">
+    <img src="assets/readme-images/grc-add-collaborator.png" alt="GRC Add Collaborator">
+</p>
+
+### GRC: Install GRC
+
+Use this command to install GRC in your machine in case you don't have it yet. You'll be asked to choose the directory where GRC will be installed.
+
+<br/>
+<p align="center">
+    <img src="assets/readme-images/grc-install-grc.png" alt="GRC Install GRC">
+</p>
+
+### GRC: Start GitHub Repository Here
+
+Use this command to create a remote GitHub repository and then connect your current workspace to it. The extension will list your GRC templates and ask you to choose a template, as well as the repository name and the repository description.
+
+<br/>
+<p align="center">
+    <img src="assets/readme-images/grc-start-repository.png" alt="Grc Start Repository">
+</p>
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+In order to use GRC extension, you need to have GRC installed in your machine. You can download it by using the [install-grc](#grc-install-grc) command or by following the [installation guide](https://github.com/ArthurSudbrackIbarra/GitHub-Repo-Creator#installation-windows) of the official GRC repository.
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+None yet.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+GRC release notes:
 
-### 1.0.0
+### 0.0.1
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Added Add Collaborator, Install GRC and Start Repository commands.
