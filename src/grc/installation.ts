@@ -38,6 +38,7 @@ export function installGRC(targetDirectory: string): GRCInstallationStatus {
     try {
       execSync(`bash <(curl -s ${GRC_DOWNLOAD_URL_LINUX_MACOS})`, {
         cwd: targetDirectory,
+        shell: "/bin/bash",
       });
       return GRCInstallationStatus.success;
     } catch (error) {

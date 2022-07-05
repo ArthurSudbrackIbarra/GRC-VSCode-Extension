@@ -242,10 +242,10 @@ export function addCollaborator(
     permission = "admin";
   }
   try {
-    execSync(
+    const result = execSync(
       `${GRCCommands.addCollaborator} ${repoName} ${collaborator} ${permission}`
     );
-    return true;
+    return !result.toString().toUpperCase().includes("ERROR");
   } catch (error) {
     console.error(error);
     return false;
