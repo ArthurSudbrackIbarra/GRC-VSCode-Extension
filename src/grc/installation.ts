@@ -8,7 +8,7 @@ export function isGRCInstalled(): boolean {
 
 export enum GRCInstallationStatus {
   alreadyInstalled = "GitHub Repository Creator (GRC) is already installed.",
-  success = "GitHub Repository Creator (GRC) was installed successfully.",
+  inProgress = "...",
   error = "Error: Could not install GitHub Repository Creator (GRC).",
 }
 
@@ -25,14 +25,16 @@ export function installGRC(
   }
   if (process.platform === "win32" && targetDirectory) {
     try {
-      execSync(
-        `iex ((New-Object System.Net.WebClient).DownloadString('${GRC_DOWNLOAD_URL_WINDOWS}'))`,
-        {
-          cwd: targetDirectory,
-          shell: "powershell.exe",
-        }
+      const terminal = vscode.window.createTerminal({
+        name: "GRC Installer",
+        shellPath: "powershell.exe",
+        cwd: targetDirectory,
+      });
+      terminal.sendText(
+        `iex ((New-Object System.Net.WebClient).DownloadString('${GRC_DOWNLOAD_URL_WINDOWS}'))`
       );
-      return GRCInstallationStatus.success;
+      terminal.show();
+      return GRCInstallationStatus.inProgress;
     } catch (error) {
       console.error(error);
       return GRCInstallationStatus.error;
@@ -47,7 +49,7 @@ export function installGRC(
         `sudo -- sh -c 'wget ${GRC_DOWNLOAD_URL_LINUX_MACOS} && bash ./grc-install.sh && rm -f grc-install.sh'`
       );
       terminal.show();
-      return GRCInstallationStatus.success;
+      return GRCInstallationStatus.inProgress;
     } catch (error) {
       console.error(error);
       return GRCInstallationStatus.error;

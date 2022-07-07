@@ -13,6 +13,8 @@ import {
 import {
   checkGRCInstallation,
   checkGRCVersion,
+  setRestartVSCodeFlag,
+  checkRestartVSCode,
   checkIfAlreadyGitRepository,
   checkUserAthenticated,
 } from "./utils/checks";
@@ -40,36 +42,23 @@ export function activate(context: vscode.ExtensionContext) {
         });
       }
       if (folder) {
-        vscode.window.showInformationMessage(
-          "Installing GRC... this may take some seconds."
-        );
         const targetDirectory = folder[0].fsPath;
         const installationStatus = installGRC(targetDirectory);
         if (installationStatus === GRCInstallationStatus.alreadyInstalled) {
           vscode.window.showInformationMessage(installationStatus);
-        } else if (installationStatus === GRCInstallationStatus.success) {
-          vscode.window
-            .showInformationMessage(
-              `${installationStatus} You need to restart VSCode for the changes to take effect.`,
-              "Close VSCode"
-            )
-            .then((answer) => {
-              if (answer) {
-                vscode.commands.executeCommand("workbench.action.closeWindow");
-              }
-            });
-        } else {
+        } else if (installationStatus === GRCInstallationStatus.error) {
           vscode.window.showErrorMessage(installationStatus);
+        } else {
+          setRestartVSCodeFlag(true);
         }
       } else {
         const installationStatus = installGRC(null);
-        if (
-          installationStatus === GRCInstallationStatus.alreadyInstalled ||
-          installationStatus === GRCInstallationStatus.success
-        ) {
+        if (installationStatus === GRCInstallationStatus.alreadyInstalled) {
           vscode.window.showInformationMessage(installationStatus);
-        } else {
+        } else if (installationStatus === GRCInstallationStatus.error) {
           vscode.window.showErrorMessage(installationStatus);
+        } else {
+          setRestartVSCodeFlag(true);
         }
       }
     })
@@ -79,6 +68,9 @@ export function activate(context: vscode.ExtensionContext) {
   */
   context.subscriptions.push(
     vscode.commands.registerCommand("grc.authenticate", async () => {
+      if (!checkRestartVSCode()) {
+        return;
+      }
       if (!checkGRCInstallation()) {
         return;
       }
@@ -107,6 +99,9 @@ export function activate(context: vscode.ExtensionContext) {
   */
   context.subscriptions.push(
     vscode.commands.registerCommand("grc.start-repository", async () => {
+      if (!checkRestartVSCode()) {
+        return;
+      }
       if (!checkGRCInstallation()) {
         return;
       }
@@ -193,6 +188,9 @@ export function activate(context: vscode.ExtensionContext) {
   */
   context.subscriptions.push(
     vscode.commands.registerCommand("grc.create-template", () => {
+      if (!checkRestartVSCode()) {
+        return;
+      }
       if (!checkGRCInstallation()) {
         return;
       }
@@ -207,6 +205,9 @@ export function activate(context: vscode.ExtensionContext) {
   */
   context.subscriptions.push(
     vscode.commands.registerCommand("grc.add-collaborator", async () => {
+      if (!checkRestartVSCode()) {
+        return;
+      }
       if (!checkGRCInstallation()) {
         return;
       }

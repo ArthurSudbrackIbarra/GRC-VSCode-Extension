@@ -32,6 +32,21 @@ export function checkGRCInstallation(): boolean {
   return true;
 }
 
+let restartVSCodeFlag = false;
+
+export function setRestartVSCodeFlag(flag: boolean): void {
+  restartVSCodeFlag = flag;
+}
+export function checkRestartVSCode(): boolean {
+  if (restartVSCodeFlag) {
+    vscode.window.showWarningMessage(
+      "(GRC) Please restart VSCode before using GRC extension."
+    );
+    return false;
+  }
+  return true;
+}
+
 export function checkUserAthenticated(): boolean {
   if (!isAuthenticated()) {
     vscode.window
