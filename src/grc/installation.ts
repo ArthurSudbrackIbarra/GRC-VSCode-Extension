@@ -1,3 +1,4 @@
+import * as vscode from "vscode";
 import { execSync } from "child_process";
 import { grcExecutablePath } from "./executable";
 
@@ -36,10 +37,13 @@ export function installGRC(targetDirectory: string): GRCInstallationStatus {
     }
   } else if (process.platform === "linux" || process.platform === "darwin") {
     try {
-      execSync(`bash <(curl -s ${GRC_DOWNLOAD_URL_LINUX_MACOS})`, {
+      const terminal  = vscode.window.createTerminal({
+        name: "GRC Installer",
+        shellPath: "/bin/bash",
         cwd: targetDirectory,
-        shell: "/bin/bash",
       });
+      terminal.sendText(`bash <(curl -s ${GRC_DOWNLOAD_URL_LINUX_MACOS})`);
+      terminal.show();
       return GRCInstallationStatus.success;
     } catch (error) {
       console.error(error);

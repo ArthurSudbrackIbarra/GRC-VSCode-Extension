@@ -1,78 +1,78 @@
 {
-  	"name": "grc",
-  	"displayName": "GitHub Repository Creator (GRC)",
-  	"description": "Automatically create GitHub repositories using YAML templates.",
-  	"version": "0.0.2",
-  	"author": "Arthur Sudbrack Ibarra",
-  	"icon": "assets/grc-logo.png",
-  	"publisher": "ArthurSudbrackIbarra",
-  	"repository": {
-  	  	"type": "git",
-  	  	"url": "https://github.com/ArthurSudbrackIbarra/GRC-VSCode-Extension"
-  	},
-  	"engines": {
-  	  	"vscode": "^1.68.0"
-  	},
-  	"categories": [
-  	  	"Other"
-  	],
-  	"activationEvents": [
-  	  	"onStartupFinished",
-  	  	"onCommand:grc.install-grc",
-  	  	"onCommand:grc.authenticate",
-  	  	"onCommand:grc.start-repository",
-  	  	"onCommand:grc.create-template",
-  	  	"onCommand:grc.add-collaborator"
-  	],
-  	"main": "./out/extension.js",
-  	"contributes": {
-  	  	"commands": [
-  	  	  	{
-  	  	  	  	"command": "grc.install-grc",
-  	  	  	  	"category": "GRC",
-  	  	  	  	"title": "Install GRC."
-  	  	  	},
-  	  	  	{
-  	  	  	  	"command": "grc.authenticate",
-  	  	  	  	"category": "GRC",
-  	  	  	  	"title": "Authenticate."
-  	  	  	},
-  	  	  	{
-  	  	  	  	"command": "grc.start-repository",
-  	  	  	  	"category": "GRC",
-  	  	  	  	"title": "Start GitHub Repository Here."
-  	  	  	},
-  	  	  	{
-  	  	  	  	"command": "grc.create-template",
-  	  	  	  	"category": "GRC",
-  	  	  	  	"title": "Create GRC Template."
-  	  	  	},
-  	  	  	{
-  	  	  	  	"command": "grc.add-collaborator",
-  	  	  	  	"category": "GRC",
-  	  	  	  	"title": "Add Collaborator to Remote Repository."
-  	  	  	}
-  	  	]
-  	},
-  	"scripts": {
-  	  	"vscode:prepublish": "npm run compile",
-  	  	"compile": "tsc -p ./",
-  	  	"watch": "tsc -watch -p ./",
-  	  	"pretest": "npm run compile && npm run lint",
-  	  	"lint": "eslint src --ext ts",
-  	  	"test": "node ./out/test/runTest.js"
-  	},
-  	"devDependencies": {
-  	  	"@types/vscode": "^1.68.0",
-  	  	"@types/glob": "^7.2.0",
-  	  	"@types/mocha": "^9.1.1",
-  	  	"@types/node": "16.x",
-  	  	"@typescript-eslint/eslint-plugin": "^5.30.0",
-  	  	"@typescript-eslint/parser": "^5.30.0",
-  	  	"eslint": "^8.18.0",
-  	  	"glob": "^8.0.3",
-  	  	"mocha": "^10.0.0",
-  	  	"typescript": "^4.7.4",
-  	  	"@vscode/test-electron": "^2.1.5"
-  	}
+	"name": "grc",
+	"displayName": "GitHub Repository Creator (GRC)",
+	"description": "Automatically create GitHub repositories using YAML templates.",
+	"version": "0.0.2",
+	"author": "Arthur Sudbrack Ibarra",
+	"icon": "assets/grc-logo.png",
+	"publisher": "ArthurSudbrackIbarra",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ArthurSudbrackIbarra/GRC-VSCode-Extension"
+	},
+	"engines": {
+		"vscode": "^1.68.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onStartupFinished",
+		"onCommand:grc.install-grc",
+		"onCommand:grc.authenticate",
+		"onCommand:grc.start-repository",
+		"onCommand:grc.create-template",
+		"onCommand:grc.add-collaborator"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "grc.install-grc",
+				"category": "GRC",
+				"title": "Install GRC."
+			},
+			{
+				"command": "grc.authenticate",
+				"category": "GRC",
+				"title": "Authenticate."
+			},
+			{
+				"command": "grc.start-repository",
+				"category": "GRC",
+				"title": "Start GitHub Repository Here."
+			},
+			{
+				"command": "grc.create-template",
+				"category": "GRC",
+				"title": "Create GRC Template."
+			},
+			{
+				"command": "grc.add-collaborator",
+				"category": "GRC",
+				"title": "Add Collaborator to Remote Repository."
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/glob": "^7.2.0",
+		"@types/mocha": "^9.1.1",
+		"@types/node": "16.x",
+		"@types/vscode": "^1.68.0",
+		"@typescript-eslint/eslint-plugin": "^5.30.0",
+		"@typescript-eslint/parser": "^5.30.0",
+		"@vscode/test-electron": "^2.1.5",
+		"eslint": "^8.18.0",
+		"glob": "^8.0.3",
+		"mocha": "^10.0.0",
+		"typescript": "^4.7.4"
+	}
 }
