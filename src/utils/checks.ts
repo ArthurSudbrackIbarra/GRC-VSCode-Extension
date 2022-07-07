@@ -10,20 +10,22 @@ export function checkGRCInstallation(): boolean {
   if (!grcExecutablePath.path) {
     const errorInfo = grcExecutablePath.errorInfo;
     switch (errorInfo) {
-      case GRCExecutableErrors.grcNotInstalled: {
-        vscode.window
-          .showErrorMessage(errorInfo, "Install GRC")
-          .then((answer) => {
-            if (answer) {
-              vscode.commands.executeCommand("grc.install-grc");
-            }
-          });
+      case GRCExecutableErrors.grcNotInstalled:
+        {
+          vscode.window
+            .showErrorMessage(errorInfo, "Install GRC")
+            .then((answer) => {
+              if (answer) {
+                vscode.commands.executeCommand("grc.install-grc");
+              }
+            });
+        }
         break;
-      }
-      case GRCExecutableErrors.unsupportedOS: {
-        vscode.window.showErrorMessage(errorInfo);
+      case GRCExecutableErrors.unsupportedOS:
+        {
+          vscode.window.showErrorMessage(errorInfo);
+        }
         break;
-      }
     }
     return false;
   }

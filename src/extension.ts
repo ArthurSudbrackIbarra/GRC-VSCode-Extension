@@ -28,39 +28,50 @@ export function activate(context: vscode.ExtensionContext) {
     Command 1: Install GRC.
   */
   context.subscriptions.push(
-    vscode.commands.registerCommand("grc.install-grc", () => {
-      vscode.window
-        .showOpenDialog({
+    vscode.commands.registerCommand("grc.install-grc", async () => {
+      let folder: vscode.Uri[] | undefined = undefined;
+      if (process.platform === "win32") {
+        folder = await vscode.window.showOpenDialog({
           canSelectFiles: false,
           canSelectFolders: true,
           canSelectMany: false,
           openLabel: "Install GRC Here",
           title: "Install GRC",
-        })
-        .then((folder) => {
-          if (folder) {
-            const targetDirectory = folder[0].fsPath;
-            const installationStatus = installGRC(targetDirectory);
-            if (installationStatus === GRCInstallationStatus.alreadyInstalled) {
-              vscode.window.showInformationMessage(installationStatus);
-            } else if (installationStatus === GRCInstallationStatus.success) {
-              vscode.window
-                .showInformationMessage(
-                  `${installationStatus} You need to restart VSCode for the changes to take effect.`,
-                  "Close VSCode"
-                )
-                .then((answer) => {
-                  if (answer) {
-                    vscode.commands.executeCommand(
-                      "workbench.action.closeWindow"
-                    );
-                  }
-                });
-            } else {
-              vscode.window.showErrorMessage(installationStatus);
-            }
-          }
         });
+      }
+      if (folder) {
+        vscode.window.showInformationMessage(
+          "Installing GRC... this may take some seconds."
+        );
+        const targetDirectory = folder[0].fsPath;
+        const installationStatus = installGRC(targetDirectory);
+        if (installationStatus === GRCInstallationStatus.alreadyInstalled) {
+          vscode.window.showInformationMessage(installationStatus);
+        } else if (installationStatus === GRCInstallationStatus.success) {
+          vscode.window
+            .showInformationMessage(
+              `${installationStatus} You need to restart VSCode for the changes to take effect.`,
+              "Close VSCode"
+            )
+            .then((answer) => {
+              if (answer) {
+                vscode.commands.executeCommand("workbench.action.closeWindow");
+              }
+            });
+        } else {
+          vscode.window.showErrorMessage(installationStatus);
+        }
+      } else {
+        const installationStatus = installGRC(null);
+        if (
+          installationStatus === GRCInstallationStatus.alreadyInstalled ||
+          installationStatus === GRCInstallationStatus.success
+        ) {
+          vscode.window.showInformationMessage(installationStatus);
+        } else {
+          vscode.window.showErrorMessage(installationStatus);
+        }
+      }
     })
   );
   /*

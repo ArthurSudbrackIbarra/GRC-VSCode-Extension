@@ -47,7 +47,10 @@ export function getGRCExecutablePath(): GRCExecutablePath {
     }
   } else if (process.platform === "linux" || process.platform === "darwin") {
     try {
-      const executablePaths = execSync("which grc").toString().trim().split("\n");
+      const executablePaths = execSync("which grc")
+        .toString()
+        .trim()
+        .split("\n");
       console.log(executablePaths);
       for (const executablePath of executablePaths) {
         if (executablePath.toUpperCase().includes("GITHUB-REPO-CREATOR")) {

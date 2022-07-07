@@ -13,15 +13,17 @@ export enum GRCInstallationStatus {
 }
 
 const GRC_DOWNLOAD_URL_WINDOWS =
-  "https://raw.githubusercontent.com/ArthurSudbrackIbarra/GitHub-Repo-Creator/main/grc-install.ps1";
+  "https://raw.githubusercontent.com/ArthurSudbrackIbarra/GitHub-Repo-Creator/improve-unix-installation-process/grc-install.ps1";
 const GRC_DOWNLOAD_URL_LINUX_MACOS =
-  "https://raw.githubusercontent.com/ArthurSudbrackIbarra/GitHub-Repo-Creator/main/grc-install.sh";
+  "https://raw.githubusercontent.com/ArthurSudbrackIbarra/GitHub-Repo-Creator/improve-unix-installation-process/grc-install.sh";
 
-export function installGRC(targetDirectory: string): GRCInstallationStatus {
+export function installGRC(
+  targetDirectory: string | null
+): GRCInstallationStatus {
   if (isGRCInstalled()) {
     return GRCInstallationStatus.alreadyInstalled;
   }
-  if (process.platform === "win32") {
+  if (process.platform === "win32" && targetDirectory) {
     try {
       execSync(
         `iex ((New-Object System.Net.WebClient).DownloadString('${GRC_DOWNLOAD_URL_WINDOWS}'))`,
@@ -37,12 +39,13 @@ export function installGRC(targetDirectory: string): GRCInstallationStatus {
     }
   } else if (process.platform === "linux" || process.platform === "darwin") {
     try {
-      const terminal  = vscode.window.createTerminal({
+      const terminal = vscode.window.createTerminal({
         name: "GRC Installer",
         shellPath: "/bin/bash",
-        cwd: targetDirectory,
       });
-      terminal.sendText(`bash <(curl -s ${GRC_DOWNLOAD_URL_LINUX_MACOS})`);
+      terminal.sendText(
+        `sudo -- sh -c 'wget ${GRC_DOWNLOAD_URL_LINUX_MACOS} && bash ./grc-install.sh && rm -f grc-install.sh'`
+      );
       terminal.show();
       return GRCInstallationStatus.success;
     } catch (error) {

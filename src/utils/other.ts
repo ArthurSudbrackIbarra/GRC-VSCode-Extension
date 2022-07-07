@@ -20,8 +20,15 @@ export function showAuthMessage(onlyOnFailure: boolean = false): void {
       `(GRC) Authenticated as ${user.name} - ${user.username}.`
     );
   } else if (!user && isGRCInstalled()) {
-    vscode.window.showErrorMessage(
-      "(GRC) Authentication failed, your access token might have changed or expired."
-    );
+    vscode.window
+      .showErrorMessage(
+        "(GRC) Authentication failed, your access token might have changed or expired.",
+        "Authenticate"
+      )
+      .then((answer) => {
+        if (answer) {
+          vscode.commands.executeCommand("grc.authenticate");
+        }
+      });
   }
 }
