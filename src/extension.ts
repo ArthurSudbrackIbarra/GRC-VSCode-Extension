@@ -18,14 +18,27 @@ import {
   checkIfAlreadyGitRepository,
   checkUserAthenticated,
 } from "./utils/checks";
-import { getWorkingDirectory, showAuthMessage } from "./utils/other";
+import {
+  getWorkingDirectory,
+  showAuthMessage,
+  updateStatusBarItem,
+} from "./utils/other";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log("GRC extension activated.");
   /*
     On Startup.
   */
-  showAuthMessage(true);
+  const statusBarItem = vscode.window.createStatusBarItem(
+    `GRC Authentication`,
+    vscode.StatusBarAlignment.Right,
+    1
+  );
+  if (showAuthMessage(true)) {
+    updateStatusBarItem(statusBarItem, true, `GRC (${getUser()?.name})`);
+  } else {
+    updateStatusBarItem(statusBarItem, false, `GRC (Not Authenticated)`);
+  }
   /*
     Command 1: Install GRC.
   */
@@ -87,6 +100,7 @@ export function activate(context: vscode.ExtensionContext) {
       const authenticated = authenticate(accessToken);
       if (authenticated) {
         showAuthMessage();
+        updateStatusBarItem(statusBarItem, true, `GRC (${getUser()?.name})`);
       } else {
         vscode.window.showErrorMessage(
           "(GRC) Authentication failed. Your access token is invalid."
@@ -217,9 +231,10 @@ export function activate(context: vscode.ExtensionContext) {
       if (!checkUserAthenticated()) {
         return;
       }
-      const user = getUser();
       const repoName = await vscode.window.showInputBox({
-        placeHolder: `(${user?.username}) Enter the name of the remote repository:`,
+        placeHolder: `(${
+          getUser()?.username
+        }) Enter the name of the remote repository:`,
       });
       if (!repoName) {
         return;

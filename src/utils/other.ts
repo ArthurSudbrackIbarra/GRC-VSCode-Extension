@@ -13,12 +13,15 @@ export function getWorkingDirectory(): string | null {
   return workingDirectory;
 }
 
-export function showAuthMessage(onlyOnFailure: boolean = false): void {
+export function showAuthMessage(onlyOnFailure: boolean = false): boolean {
   const user = getUser();
-  if (user && !onlyOnFailure) {
-    vscode.window.showInformationMessage(
-      `(GRC) Authenticated as ${user.name} - ${user.username}.`
-    );
+  if (user) {
+    if (!onlyOnFailure) {
+      vscode.window.showInformationMessage(
+        `(GRC) Authenticated as ${user.name} - ${user.username}.`
+      );
+    }
+    return true;
   } else if (!user && isGRCInstalled()) {
     vscode.window
       .showErrorMessage(
@@ -31,4 +34,17 @@ export function showAuthMessage(onlyOnFailure: boolean = false): void {
         }
       });
   }
+  return false;
+}
+
+export function updateStatusBarItem(
+  statusBarItem: vscode.StatusBarItem,
+  authenticated: boolean,
+  text: string
+) {
+  statusBarItem.text = text;
+  if (!authenticated) {
+    statusBarItem.command = "grc.authenticate";
+  }
+  statusBarItem.show();
 }

@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import { execSync } from "child_process";
 import { grcExecutablePath } from "./executable";
 
 export function isGRCInstalled(): boolean {

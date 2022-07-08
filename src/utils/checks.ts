@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import { existsSync } from "fs";
 import { join } from "path";
 import { getGRCExecutablePath, GRCExecutableErrors } from "../grc/executable";
 import { getGRCVersion, isAuthenticated, updateGRC } from "../grc/commands";
@@ -64,7 +63,7 @@ export function checkUserAthenticated(): boolean {
   return true;
 }
 
-const VALID_GRC_VERSION = "v3.0.3";
+const VALID_GRC_VERSION = "v3.0.2";
 
 export function checkGRCVersion(): boolean {
   const grcVersion = getGRCVersion();
@@ -97,7 +96,9 @@ export async function checkIfAlreadyGitRepository(): Promise<boolean> {
     return false;
   }
   try {
-    await vscode.workspace.fs.stat(vscode.Uri.file(join(workingDirectory, ".git")));
+    await vscode.workspace.fs.stat(
+      vscode.Uri.file(join(workingDirectory, ".git"))
+    );
     return true;
   } catch (error) {
     return false;
