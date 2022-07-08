@@ -111,7 +111,7 @@ export function activate(context: vscode.ExtensionContext) {
       if (!checkUserAthenticated()) {
         return;
       }
-      if (checkIfAlreadyGitRepository()) {
+      if (await checkIfAlreadyGitRepository()) {
         vscode.window.showErrorMessage(
           "Error: Your current directory is already a git repository."
         );

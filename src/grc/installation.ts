@@ -49,6 +49,7 @@ export function installGRC(
         `sudo -- sh -c 'wget ${GRC_DOWNLOAD_URL_LINUX_MACOS} && bash ./grc-install.sh && rm -f grc-install.sh'`
       );
       terminal.show();
+      vscode.window.showInformationMessage("Please enter your sudo password to install GitHub Repository Creator (GRC).");
       return GRCInstallationStatus.inProgress;
     } catch (error) {
       console.error(error);

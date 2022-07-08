@@ -40,7 +40,7 @@ export function setRestartVSCodeFlag(flag: boolean): void {
 export function checkRestartVSCode(): boolean {
   if (restartVSCodeFlag) {
     vscode.window.showWarningMessage(
-      "(GRC) Please restart VSCode before using GRC extension."
+      "(GRC) Please restart Visual Studio Code before using GRC extension."
     );
     return false;
   }
@@ -91,11 +91,15 @@ export function checkGRCVersion(): boolean {
   return true;
 }
 
-export function checkIfAlreadyGitRepository(): boolean {
+export async function checkIfAlreadyGitRepository(): Promise<boolean> {
   const workingDirectory = getWorkingDirectory();
   if (!workingDirectory) {
     return false;
   }
-  const gitPath = join(workingDirectory, ".git");
-  return existsSync(gitPath);
+  try {
+    await vscode.workspace.fs.stat(vscode.Uri.file(join(workingDirectory, ".git")));
+    return true;
+  } catch (error) {
+    return false;
+  }
 }
