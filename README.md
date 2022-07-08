@@ -17,6 +17,7 @@ An extension for using [GRC](https://github.com/ArthurSudbrackIbarra/GitHub-Repo
 - [Release Notes](#release-notes)
   - [0.0.1](#001)
   - [0.0.2](#002)
+  - [0.0.3](#003)
 
 ## Download
 
@@ -72,16 +73,17 @@ Use this command to create a remote GitHub repository and then connect your curr
 
 ## Requirements
 
-In order to use GRC extension, you need to have GRC installed in your machine. You can download it by using the [install-grc](#grc-install-grc) command or by following the [installation guide](https://github.com/ArthurSudbrackIbarra/GitHub-Repo-Creator#installation-windows) of the official GRC repository.
+In order to use GRC extension, you need to have GRC installed in your machine. Fortunately, You can download it through the extension with the [install-grc](#grc-install-grc) command. You can also follow the [installation guide](https://github.com/ArthurSudbrackIbarra/GitHub-Repo-Creator#installation-windows) of the official GRC repository.
 
 | GRC Version | Compatible GRC Extension Version |
 | :---------: | :------------------------------: |
 |   v3.0.1    |              v0.0.1              |
 |   v3.0.2    |              v0.0.2              |
+|   v3.0.3    |              v0.0.3              |
 
 ## Known Issues
 
-This extension has not yet been tested well on Linux and MacOS operating systems, which means that eventual bugs may appear. If you find one, feel free to open an issue in the extension's repository or contact the extension publisher.
+This extension was tested on Windows 10, Ubuntu 22.04 and macOS. Therefore, the extension might have bugs or not work in other operating systems. If you find any problems, feel free to contact the [publisher](mailto:arthur.ibarra@edu.pucrs.br).
 
 ## Release Notes
 
@@ -111,3 +113,11 @@ Technical Changes:
 
 - More robust validations. GRC is installed, GRC version is correct, user is authenticated, workspace is not already a git repository.
 - Better source code folders and files structuring.
+
+### 0.0.3
+
+- GRC extension is now working on Ubuntu and macOS, it was not working previously.
+
+- GRC installation is now done through a Visual Studio Code terminal (more feedback).
+
+- Added status bar item that shows if the user is authenticated or not.

@@ -1,5 +1,9 @@
 import * as vscode from "vscode";
-import { installGRC, GRCInstallationStatus } from "./grc/installation";
+import {
+  installGRC,
+  GRCInstallationStatus,
+  isGRCInstalled,
+} from "./grc/installation";
 import {
   authenticate,
   getTemplates,
@@ -44,6 +48,10 @@ export function activate(context: vscode.ExtensionContext) {
   */
   context.subscriptions.push(
     vscode.commands.registerCommand("grc.install-grc", async () => {
+      if (isGRCInstalled()) {
+        vscode.window.showInformationMessage("GRC is already installed.");
+        return;
+      }
       let folder: vscode.Uri[] | undefined = undefined;
       if (process.platform === "win32") {
         folder = await vscode.window.showOpenDialog({
