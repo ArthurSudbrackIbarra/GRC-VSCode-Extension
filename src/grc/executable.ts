@@ -51,9 +51,8 @@ export function getGRCExecutablePath(): GRCExecutablePath {
         .toString()
         .trim()
         .split("\n");
-      console.log(executablePaths);
       for (const executablePath of executablePaths) {
-        if (executablePath.toUpperCase().includes("GITHUB-REPO-CREATOR")) {
+        if (executablePath === "/usr/bin/grc") {
           return {
             path: executablePath,
             errorInfo: null,
