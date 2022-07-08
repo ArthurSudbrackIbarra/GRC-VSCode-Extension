@@ -25,7 +25,10 @@ You can download GRC extension here: https://marketplace.visualstudio.com/items?
 
 ## Features
 
-Bellow, all the GRC extension features will be listed. To use GRC commands, press `ctrl` + `shift` + `p` or `⌘` + `shift` + `p` to open the command pallete.
+Bellow, all the GRC extension features will be listed. To use GRC commands, open the command pallete with:
+
+- `Ctrl` + `Shift` + `p`
+- `⌘` + `Shift` + `p`
 
 <p align="center">
     <img src="assets/readme-images/grc-commands.png" alt="GRC Commands">
