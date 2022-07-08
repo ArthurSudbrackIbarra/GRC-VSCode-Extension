@@ -168,7 +168,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
         vscode.window
           .showInformationMessage(
-            `Repository created successfully for account ${user?.name}: ${repoURL}.`,
+            `Repository created successfully for account ${user?.username}: ${repoURL}.`,
             "Open in Browser"
           )
           .then((answer) => {
