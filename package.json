@@ -2,7 +2,7 @@
 	"name": "grc",
 	"displayName": "GitHub Repository Creator (GRC)",
 	"description": "Automatically start GitHub repositories in your workspace using custom templates.",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"author": "Arthur Sudbrack Ibarra",
 	"icon": "assets/grc-logo.png",
 	"publisher": "ArthurSudbrackIbarra",
