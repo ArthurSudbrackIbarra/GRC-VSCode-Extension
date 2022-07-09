@@ -127,7 +127,6 @@ User Experience:
 Technical Changes:
 
 - More robust validations. GRC is installed, GRC version is correct, user is authenticated, workspace is not already a git repository.
-- Better source code folders and files structuring.
 
 ### 0.0.3
 
@@ -136,3 +135,5 @@ Technical Changes:
 - GRC installation is now done through a Visual Studio Code terminal (more feedback).
 
 - Added status bar item that shows if the user is authenticated or not.
+
+- Added customizable configurations to the extension.
