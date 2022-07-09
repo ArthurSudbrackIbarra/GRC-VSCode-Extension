@@ -25,7 +25,7 @@ import {
 import {
   getWorkingDirectory,
   showAuthMessage,
-  updateStatusBarItem,
+  updateAuthenticationStatusBar,
 } from "./utils/other";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -33,15 +33,10 @@ export function activate(context: vscode.ExtensionContext) {
   /*
     On Startup.
   */
-  const statusBarItem = vscode.window.createStatusBarItem(
-    `GRC Authentication`,
-    vscode.StatusBarAlignment.Right,
-    1
-  );
   if (showAuthMessage(true)) {
-    updateStatusBarItem(statusBarItem, true, `GRC (${getUser()?.name})`);
+    updateAuthenticationStatusBar(true, `GRC (${getUser()?.name})`);
   } else {
-    updateStatusBarItem(statusBarItem, false, `GRC (Not Authenticated)`);
+    updateAuthenticationStatusBar(false, `GRC (Not Authenticated)`);
   }
   /*
     Command 1: Install GRC.
@@ -108,7 +103,7 @@ export function activate(context: vscode.ExtensionContext) {
       const authenticated = authenticate(accessToken);
       if (authenticated) {
         showAuthMessage();
-        updateStatusBarItem(statusBarItem, true, `GRC (${getUser()?.name})`);
+        updateAuthenticationStatusBar(true, `GRC (${getUser()?.name})`);
       } else {
         vscode.window.showErrorMessage(
           "(GRC) Authentication failed. Your access token is invalid."

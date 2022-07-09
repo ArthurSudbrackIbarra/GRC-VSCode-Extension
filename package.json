@@ -1,7 +1,7 @@
 {
 	"name": "grc",
 	"displayName": "GitHub Repository Creator (GRC)",
-	"description": "Automatically create GitHub repositories using YAML templates.",
+	"description": "Automatically create GitHub repositories using custom templates.",
 	"version": "0.0.2",
 	"author": "Arthur Sudbrack Ibarra",
 	"icon": "assets/grc-logo.png",
@@ -51,6 +51,23 @@
 				"command": "grc.add-collaborator",
 				"category": "GRC",
 				"title": "Add Collaborator to Remote Repository."
+			}
+		],
+		"configuration": [
+			{
+				"title": "GitHub Repository Creator (GRC)",
+				"properties": {
+					"grc.showAuthenticationErrorMessages": {
+						"type": "boolean",
+						"default": true,
+						"description": "Whether or not to show authentication error messages on startup."
+					},
+					"grc.showAuthenticationStatusBar": {
+						"type": "boolean",
+						"default": true,
+						"description": "Whether or not to display the user authentication status bar item. (Reload required)."
+					}
+				}
 			}
 		]
 	},

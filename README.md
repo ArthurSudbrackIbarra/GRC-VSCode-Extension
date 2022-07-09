@@ -25,7 +25,7 @@ You can download GRC extension here: https://marketplace.visualstudio.com/items?
 
 ## Features
 
-Bellow, all the GRC extension features will be listed. To use GRC commands, open the command pallete with:
+Bellow, all the GRC extension features will be listed. To use commands, open the command pallete with:
 
 - `Ctrl` + `Shift` + `p`
 - `⌘` + `Shift` + `p`
@@ -71,7 +71,19 @@ Use this command to install GRC in your machine in case you don't have it yet. Y
 Use this command to create a remote GitHub repository and then connect your current workspace to it. The extension will list your GRC templates and ask you to choose a template, as well as the repository name and the repository description.
 
 <p align="center">
-    <img src="assets/readme-images/grc-start-repository.png" alt="Grc Start Repository">
+    <img src="assets/readme-images/grc-start-repository.png" alt="GRC Start Repository">
+</p>
+
+## Configurations
+
+You can change GRC Configurations by clicking Settings -> Extensions -> GitHub Repository Creator (GRC).
+
+- `grc.showAuthenticationErrorMessages`: Whether or not to show authentication error messages on startup.
+
+- `grc.showAuthenticationStatusBar`: Whether or not to display the user authentication status bar item. (Reload required).
+
+<p align="center">
+    <img src="assets/readme-images/grc-configurations.png" alt="GRC Configurations">
 </p>
 
 ## Requirements

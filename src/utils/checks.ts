@@ -63,7 +63,7 @@ export function checkUserAthenticated(): boolean {
   return true;
 }
 
-const VALID_GRC_VERSION = "v3.0.3";
+const VALID_GRC_VERSION = "v3.0.2";
 
 export function checkGRCVersion(): boolean {
   const grcVersion = getGRCVersion();

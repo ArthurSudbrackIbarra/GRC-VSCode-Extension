@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { getUser } from "../grc/commands";
 import { isGRCInstalled } from "../grc/installation";
+import { SettingsJSON, getConfig } from "../configurations/settingsJSON";
 
 export function getWorkingDirectory(): string | null {
   if (!vscode.workspace.workspaceFolders) {
@@ -13,6 +14,8 @@ export function getWorkingDirectory(): string | null {
   return workingDirectory;
 }
 
+const shouldShowMessages = getConfig(SettingsJSON.showAuthenticationMessages);
+
 export function showAuthMessage(onlyOnFailure: boolean = false): boolean {
   const user = getUser();
   if (user) {
@@ -23,25 +26,39 @@ export function showAuthMessage(onlyOnFailure: boolean = false): boolean {
     }
     return true;
   } else if (!user && isGRCInstalled()) {
-    vscode.window
-      .showErrorMessage(
-        "(GRC) Authentication failed, your access token is either not configured yet or it has changed/expired.",
-        "Authenticate"
-      )
-      .then((answer) => {
-        if (answer) {
-          vscode.commands.executeCommand("grc.authenticate");
-        }
-      });
+    if (shouldShowMessages) {
+      vscode.window
+        .showErrorMessage(
+          "(GRC) Authentication failed, your access token is either not configured yet or it has changed/expired.",
+          "Authenticate"
+        )
+        .then((answer) => {
+          if (answer) {
+            vscode.commands.executeCommand("grc.authenticate");
+          }
+        });
+    }
   }
   return false;
 }
 
-export function updateStatusBarItem(
-  statusBarItem: vscode.StatusBarItem,
+const shouldShowStatusBar = getConfig(SettingsJSON.showAuthenticationStatusBar);
+
+const statusBarItem = shouldShowStatusBar
+  ? vscode.window.createStatusBarItem(
+      `GRC Authentication`,
+      vscode.StatusBarAlignment.Right,
+      1
+    )
+  : null;
+
+export function updateAuthenticationStatusBar(
   authenticated: boolean,
   text: string
-) {
+): void {
+  if (!statusBarItem) {
+    return;
+  }
   statusBarItem.text = text;
   if (!authenticated) {
     statusBarItem.command = "grc.authenticate";
