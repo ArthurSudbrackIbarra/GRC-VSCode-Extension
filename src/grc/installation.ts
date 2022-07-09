@@ -11,12 +11,17 @@ export enum GRCInstallationStatus {
   error = "Error: Could not install GitHub Repository Creator (GRC).",
 }
 
-const GRC_DOWNLOAD_URL_WINDOWS =
-  "https://raw.githubusercontent.com/ArthurSudbrackIbarra/GitHub-Repo-Creator/improve-unix-installation-process/grc-install-windows.ps1";
-const GRC_DOWNLOAD_URL_LINUX =
-  "https://raw.githubusercontent.com/ArthurSudbrackIbarra/GitHub-Repo-Creator/improve-unix-installation-process/grc-install-linux.sh";
-const GRC_DOWNLOAD_URL_MACOS =
-  "https://raw.githubusercontent.com/ArthurSudbrackIbarra/GitHub-Repo-Creator/improve-unix-installation-process/grc-install-macos.sh";
+const AUTHOR = "ArthurSudbrackIbarra";
+const REPOSITORY = "GitHub-Repo-Creator";
+const BRANCH = "main";
+
+const GRC_DOWNLOAD_URL_WINDOWS = `https://raw.githubusercontent.com/${AUTHOR}/${REPOSITORY}/${BRANCH}/grc-install-windows.ps1`;
+const GRC_DOWNLOAD_URL_LINUX = `https://raw.githubusercontent.com/${AUTHOR}/${REPOSITORY}/${BRANCH}/grc-install-linux.sh`;
+const GRC_DOWNLOAD_URL_MACOS = `https://raw.githubusercontent.com/${AUTHOR}/${REPOSITORY}/${BRANCH}/grc-install-macos.sh`;
+
+const WINDOWS_INSTALLATION_COMMAND = `iex ((New-Object System.Net.WebClient).DownloadString('${GRC_DOWNLOAD_URL_WINDOWS}'))`;
+const LINUX_INSTALLATION_COMMAND = `sudo -- sh -c 'wget ${GRC_DOWNLOAD_URL_LINUX} && bash grc-install-linux.sh && rm -f grc-install-linux.sh'`;
+const MACOS_INSTALLATION_COMMAND = `sudo -- sh -c 'curl ${GRC_DOWNLOAD_URL_MACOS} -O && bash grc-install-macos.sh && rm -f grc-install-macos.sh'`;
 
 export function installGRC(
   targetDirectory: string | null
@@ -31,9 +36,7 @@ export function installGRC(
         shellPath: "powershell.exe",
         cwd: targetDirectory,
       });
-      terminal.sendText(
-        `iex ((New-Object System.Net.WebClient).DownloadString('${GRC_DOWNLOAD_URL_WINDOWS}'))`
-      );
+      terminal.sendText(WINDOWS_INSTALLATION_COMMAND);
       terminal.show();
       return GRCInstallationStatus.inProgress;
     } catch (error) {
@@ -49,8 +52,8 @@ export function installGRC(
       });
       const command =
         process.platform === "linux"
-          ? `sudo -- sh -c 'wget ${GRC_DOWNLOAD_URL_LINUX} && bash grc-install-linux.sh && rm -f grc-install-linux.sh'`
-          : `sudo -- sh -c 'curl ${GRC_DOWNLOAD_URL_MACOS} -o grc-installer.sh && bash grc-installer.sh && rm -f grc-installer.sh'`;
+          ? LINUX_INSTALLATION_COMMAND
+          : MACOS_INSTALLATION_COMMAND;
       terminal.sendText(command);
       terminal.show();
       vscode.window.showInformationMessage(
