@@ -38,7 +38,7 @@ export function showAuthenticationMessage(
   if (user) {
     if (!onlyOnFailure) {
       vscode.window.showInformationMessage(
-        `(GRC) Authenticated as ${user.name} - ${user.username}.`
+        `(GRC) Authenticated as ${user.username}.`
       );
     }
     return true;

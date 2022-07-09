@@ -44,7 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
     On Startup.
   */
   if (showAuthenticationMessage(true)) {
-    updateAuthenticationStatusBar(true, `GRC (${getUser()?.name})`);
+    updateAuthenticationStatusBar(true, `GRC (${getUser()?.username})`);
   } else {
     updateAuthenticationStatusBar(false, `GRC (Not Authenticated)`);
   }
@@ -120,7 +120,7 @@ export function activate(context: vscode.ExtensionContext) {
         const authenticated = authenticate(accessToken);
         if (authenticated) {
           showAuthenticationMessage();
-          updateAuthenticationStatusBar(true, `GRC (${getUser()?.name})`);
+          updateAuthenticationStatusBar(true, `GRC (${getUser()?.username})`);
         } else {
           vscode.window.showErrorMessage(
             "(GRC) Authentication failed. Your access token is invalid."
@@ -173,7 +173,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
         const user = getUser();
         const repoName = await vscode.window.showInputBox({
-          placeHolder: `(${user?.name}) Enter a name for the repository:`,
+          placeHolder: `(${user?.username}) Enter a name for the repository:`,
         });
         if (!repoName) {
           return;
@@ -258,9 +258,8 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
         const repoName = await vscode.window.showInputBox({
-          placeHolder: `(${
-            getUser()?.username
-          }) Enter the name of the remote repository:`,
+          placeHolder: `(${getUser()?.username
+            }) Enter the name of the remote repository:`,
         });
         if (!repoName) {
           return;
