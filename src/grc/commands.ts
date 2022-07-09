@@ -4,6 +4,10 @@ import { readdirSync } from "fs";
 import { join } from "path";
 import { grcExecutablePath } from "./executable";
 import { isGRCInstalled } from "./installation";
+import {
+  getPreference,
+  UserPreferences,
+} from "../configurations/user-preferences";
 
 class GRCCommands {
   static readonly authenticate = `"${grcExecutablePath.path}" authenticate`;

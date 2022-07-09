@@ -2,9 +2,12 @@ import * as vscode from "vscode";
 import { ExtensionCommands } from "../extension";
 import { getUser } from "../grc/commands";
 import { isGRCInstalled } from "../grc/installation";
-import { UserPreferences, getConfig } from "../configurations/user-preferences";
+import {
+  UserPreferences,
+  getPreference,
+} from "../configurations/user-preferences";
 
-const shouldShowMessages = getConfig(
+const shouldShowMessages = getPreference(
   UserPreferences.showAuthenticationErrorMessages
 );
 

@@ -66,6 +66,11 @@
 						"type": "boolean",
 						"default": true,
 						"description": "Whether or not to display the user authentication status bar item. (Reload required)."
+					},
+					"grc.allowPre-checksOnStartup": {
+						"type": "boolean",
+						"default": true,
+						"description": "Whether or not to allow pre-checks on startup. Extension takes longer to load but commands will take less time to execute when first used."
 					}
 				}
 			}

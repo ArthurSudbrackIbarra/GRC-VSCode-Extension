@@ -1,8 +1,11 @@
 import * as vscode from "vscode";
 import { ExtensionCommands } from "../extension";
-import { UserPreferences, getConfig } from "../configurations/user-preferences";
+import {
+  UserPreferences,
+  getPreference,
+} from "../configurations/user-preferences";
 
-const shouldShowStatusBar = getConfig(
+const shouldShowStatusBar = getPreference(
   UserPreferences.showAuthenticationStatusBar
 );
 

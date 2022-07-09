@@ -16,6 +16,10 @@ import {
 } from "./grc/commands";
 import { showAuthMessage } from "./verifications/actions";
 import {
+  getPreference,
+  UserPreferences,
+} from "./configurations/user-preferences";
+import {
   checkGRCInstallation,
   checkGRCVersion,
   setRestartVSCodeFlag,
@@ -43,6 +47,11 @@ export function activate(context: vscode.ExtensionContext) {
     updateAuthenticationStatusBar(true, `GRC (${getUser()?.name})`);
   } else {
     updateAuthenticationStatusBar(false, `GRC (Not Authenticated)`);
+  }
+  // These checks on startup will later speed up the extension commands.
+  if (getPreference(UserPreferences.allowPreChecksOnStartup)) {
+    checkGRCInstallation(true);
+    checkGRCVersion(true);
   }
   /*
     Command 1: Install GRC.
