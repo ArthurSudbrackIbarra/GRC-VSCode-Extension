@@ -1,8 +1,9 @@
 import * as vscode from "vscode";
 import { join } from "path";
+import { ExtensionCommands } from "../extension";
 import { getGRCExecutablePath, GRCExecutableErrors } from "../grc/executable";
 import { getGRCVersion, isAuthenticated, updateGRC } from "../grc/commands";
-import { getWorkingDirectory } from "./other";
+import { getWorkingDirectory } from "../vscode-components/workspace";
 
 export function checkGRCInstallation(): boolean {
   const grcExecutablePath = getGRCExecutablePath();
@@ -15,7 +16,7 @@ export function checkGRCInstallation(): boolean {
             .showErrorMessage(errorInfo, "Install GRC")
             .then((answer) => {
               if (answer) {
-                vscode.commands.executeCommand("grc.install-grc");
+                vscode.commands.executeCommand(ExtensionCommands.installGRC);
               }
             });
         }
@@ -55,7 +56,7 @@ export function checkUserAthenticated(): boolean {
       )
       .then((answer) => {
         if (answer) {
-          vscode.commands.executeCommand("grc.authenticate");
+          vscode.commands.executeCommand(ExtensionCommands.authenticate);
         }
       });
     return false;
