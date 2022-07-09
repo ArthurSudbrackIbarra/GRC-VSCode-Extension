@@ -4,14 +4,10 @@ import { ExtensionCommands } from "../extension";
 import { getGRCExecutablePath, GRCExecutableErrors } from "../grc/executable";
 import { getGRCVersion, getUser, updateGRC } from "../grc/commands";
 import { getWorkingDirectory } from "../vscode-components/workspace";
+import { showInstallationErrorMessage } from "./actions";
 
-// Both variables below (installationErrorFlag and showGRCNotInstalledMessage)
-// are used not to check for GRC installation more than once.
 let installationErrorFlag = true;
-
-// This variable stores a function that is called when GRC is not installed.
-// It is used to show a message to the user.
-let showGRCNotInstalledMessage: (() => void) | null = null;
+let installationError: GRCExecutableErrors | null = null;
 
 export function checkGRCInstallation(
   suppressErrorMessages: boolean = false
@@ -19,44 +15,19 @@ export function checkGRCInstallation(
   if (!installationErrorFlag) {
     return true;
   }
-  if (showGRCNotInstalledMessage) {
-    showGRCNotInstalledMessage();
+  if (installationError) {
+    if (suppressErrorMessages) {
+      return false;
+    }
+    showInstallationErrorMessage(installationError);
     return false;
   }
   const grcExecutablePath = getGRCExecutablePath();
   if (!grcExecutablePath.path) {
-    const errorInfo = grcExecutablePath.errorInfo;
-    switch (errorInfo) {
-      case GRCExecutableErrors.grcNotInstalled:
-        {
-          showGRCNotInstalledMessage = () => {
-            if (!suppressErrorMessages) {
-              vscode.window
-                .showErrorMessage(errorInfo, "Install GRC")
-                .then((answer) => {
-                  if (answer) {
-                    vscode.commands.executeCommand(
-                      ExtensionCommands.installGRC
-                    );
-                  }
-                });
-            }
-          };
-        }
-        break;
-      default:
-        {
-          showGRCNotInstalledMessage = () => {
-            if (errorInfo) {
-              if (!suppressErrorMessages) {
-                vscode.window.showErrorMessage(errorInfo);
-              }
-            }
-          };
-        }
-        break;
+    installationError = grcExecutablePath.errorInfo;
+    if (!suppressErrorMessages && installationError) {
+      showInstallationErrorMessage(installationError);
     }
-    showGRCNotInstalledMessage();
     return false;
   }
   installationErrorFlag = false;

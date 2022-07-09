@@ -7,7 +7,7 @@ export enum GRCExecutableErrors {
 
 interface GRCExecutablePath {
   path: string | null;
-  errorInfo: string | null;
+  errorInfo: GRCExecutableErrors | null;
 }
 
 export function getGRCExecutablePath(): GRCExecutablePath {
