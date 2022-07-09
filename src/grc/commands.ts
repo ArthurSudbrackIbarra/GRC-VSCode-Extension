@@ -11,7 +11,7 @@ class GRCCommands {
   static readonly update = `"${grcExecutablePath.path}" update`;
   static readonly userInfo = `"${grcExecutablePath.path}" user`;
   static readonly chooseTemplate = `"${grcExecutablePath.path}" temp choose`;
-  // generateTemplate is applied directly to the user terminal.
+  // generateTemplate is applied directly to the user's VSCode terminal.
   static readonly generateTemplate = "grc temp generate";
   static readonly getRepoURL = `"${grcExecutablePath.path}" remote url`;
   static readonly addCollaborator = `"${grcExecutablePath.path}" remote add-collab`;

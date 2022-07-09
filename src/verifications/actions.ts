@@ -5,7 +5,7 @@ import { isGRCInstalled } from "../grc/installation";
 import { UserPreferences, getConfig } from "../configurations/user-preferences";
 
 const shouldShowMessages = getConfig(
-  UserPreferences.showAuthenticationMessages
+  UserPreferences.showAuthenticationErrorMessages
 );
 
 export function showAuthMessage(onlyOnFailure: boolean = false): boolean {

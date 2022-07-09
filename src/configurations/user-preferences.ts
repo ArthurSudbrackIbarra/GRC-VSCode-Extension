@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
 export enum UserPreferences {
-  showAuthenticationMessages = "grc.showAuthenticationErrorMessages",
+  showAuthenticationErrorMessages = "grc.showAuthenticationErrorMessages",
   showAuthenticationStatusBar = "grc.showAuthenticationStatusBar",
 }
 
