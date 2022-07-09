@@ -14,7 +14,7 @@ import {
   getUser,
   createTemplate,
 } from "./grc/commands";
-import { showAuthMessage } from "./verifications/actions";
+import { showAuthenticationMessage } from "./verifications/actions";
 import {
   getPreference,
   UserPreferences,
@@ -43,7 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
   /*
     On Startup.
   */
-  if (showAuthMessage(true)) {
+  if (showAuthenticationMessage(true)) {
     updateAuthenticationStatusBar(true, `GRC (${getUser()?.name})`);
   } else {
     updateAuthenticationStatusBar(false, `GRC (Not Authenticated)`);
@@ -119,7 +119,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
         const authenticated = authenticate(accessToken);
         if (authenticated) {
-          showAuthMessage();
+          showAuthenticationMessage();
           updateAuthenticationStatusBar(true, `GRC (${getUser()?.name})`);
         } else {
           vscode.window.showErrorMessage(
