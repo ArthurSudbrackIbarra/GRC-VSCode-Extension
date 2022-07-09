@@ -4,6 +4,10 @@ import { readdirSync } from "fs";
 import { join } from "path";
 import { grcExecutablePath } from "./executable";
 import { isGRCInstalled } from "./installation";
+import {
+  getPreference,
+  UserPreferences,
+} from "../configurations/user-preferences";
 
 class GRCCommands {
   static readonly authenticate = `"${grcExecutablePath.path}" authenticate`;
@@ -11,7 +15,7 @@ class GRCCommands {
   static readonly update = `"${grcExecutablePath.path}" update`;
   static readonly userInfo = `"${grcExecutablePath.path}" user`;
   static readonly chooseTemplate = `"${grcExecutablePath.path}" temp choose`;
-  // generateTemplate is applied directly to the user terminal.
+  // generateTemplate is applied directly to the user's VSCode terminal.
   static readonly generateTemplate = "grc temp generate";
   static readonly getRepoURL = `"${grcExecutablePath.path}" remote url`;
   static readonly addCollaborator = `"${grcExecutablePath.path}" remote add-collab`;
@@ -26,8 +30,8 @@ export function isAuthenticated(): boolean {
     return false;
   }
   try {
-    const result = execSync(`${GRCCommands.getRepoURL} XYZ`).toString().trim();
-    return !result.toUpperCase().includes("NOT AUTHENTICATED");
+    execSync(GRCCommands.userInfo);
+    return true;
   } catch (error) {
     console.error(error);
     return false;
@@ -39,8 +43,8 @@ export function authenticate(accessToken: string): boolean {
     return false;
   }
   try {
-    const result = execSync(`${GRCCommands.authenticate} ${accessToken}`);
-    return !result.toString().toUpperCase().includes("ERROR");
+    execSync(`${GRCCommands.authenticate} ${accessToken}`);
+    return true;
   } catch (error) {
     console.error(error);
     return false;
@@ -81,8 +85,8 @@ export function updateGRC(): boolean {
     return false;
   }
   try {
-    const result = execSync(GRCCommands.update);
-    return !result.toString().toUpperCase().includes("ERROR");
+    execSync(GRCCommands.update);
+    return true;
   } catch (error) {
     console.error(error);
     return false;
@@ -160,7 +164,14 @@ export function getTemplates(): string[] | null {
   if (!isGRCInstalled() || !grcExecutablePath.path) {
     return null;
   }
-  const templatesPath = join(grcExecutablePath.path, "..", "templates");
+  let templatesPath = "";
+  if (process.platform === "win32") {
+    templatesPath = join(grcExecutablePath.path, "..", "templates");
+  } else if (process.platform === "linux" || process.platform === "darwin") {
+    templatesPath = "/opt/grc/GitHub-Repo-Creator/templates";
+  } else {
+    return null;
+  }
   try {
     return readdirSync(templatesPath).filter((fileName) =>
       fileName.endsWith(".yaml")

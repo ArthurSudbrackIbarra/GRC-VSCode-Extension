@@ -7,7 +7,7 @@ export enum GRCExecutableErrors {
 
 interface GRCExecutablePath {
   path: string | null;
-  errorInfo: string | null;
+  errorInfo: GRCExecutableErrors | null;
 }
 
 export function getGRCExecutablePath(): GRCExecutablePath {
@@ -52,7 +52,7 @@ export function getGRCExecutablePath(): GRCExecutablePath {
         .trim()
         .split("\n");
       for (const executablePath of executablePaths) {
-        if (executablePath.toUpperCase().includes("GITHUB-REPO-CREATOR")) {
+        if (executablePath === "/usr/bin/grc") {
           return {
             path: executablePath,
             errorInfo: null,
