@@ -143,7 +143,7 @@ export function getUser(): GitHubUser | null {
       avatarURL: "",
     };
     for (const line of userInfoLines) {
-      const splittedLine = line.split(":", 2);
+      const splittedLine = line.split(/:(.*)/s);
       switch (splittedLine[0].toUpperCase()) {
         case "USERNAME":
           {
