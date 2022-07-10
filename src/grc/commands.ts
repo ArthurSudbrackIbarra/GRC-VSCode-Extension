@@ -14,6 +14,7 @@ class GRCCommands {
   // generateTemplate is applied directly to the user's VSCode terminal.
   static readonly generateTemplate = "grc temp generate";
   static readonly mergeTemplates = `"${grcExecutablePath.path}" temp merge`;
+  static readonly editTemplate = `"${grcExecutablePath.path}" temp edit`;
   static readonly getRepoURL = `"${grcExecutablePath.path}" remote url`;
   static readonly addCollaborator = `"${grcExecutablePath.path}" remote add-collab`;
 }
@@ -157,19 +158,25 @@ export function getUser(): GitHubUser | null {
   Templates.
 */
 
-export function getTemplates(): string[] | null {
+function getTemplatesPath(): string | null {
   if (!isGRCInstalled() || !grcExecutablePath.path) {
     return null;
   }
-  let templatesPath = "";
   if (process.platform === "win32") {
-    templatesPath = join(grcExecutablePath.path, "..", "templates");
+    return join(grcExecutablePath.path, "..", "templates");
   } else if (process.platform === "linux" || process.platform === "darwin") {
-    templatesPath = "/opt/grc/GitHub-Repo-Creator/templates";
+    return "/opt/grc/GitHub-Repo-Creator/templates";
   } else {
     return null;
   }
+}
+
+export function getTemplates(): string[] | null {
   try {
+    const templatesPath = getTemplatesPath();
+    if (!templatesPath) {
+      return null;
+    }
     return readdirSync(templatesPath).filter((fileName) =>
       fileName.endsWith(".yaml")
     );
@@ -206,12 +213,17 @@ export function createTemplate(): boolean {
   if (!isGRCInstalled()) {
     return false;
   }
-  const terminal = vscode.window.createTerminal({
-    name: "Generate GRC Template",
-  });
-  terminal.sendText(GRCCommands.generateTemplate);
-  terminal.show();
-  return true;
+  try {
+    const terminal = vscode.window.createTerminal({
+      name: "Generate GRC Template",
+    });
+    terminal.sendText(GRCCommands.generateTemplate);
+    terminal.show();
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 }
 
 export function mergeTemplates(
@@ -232,6 +244,24 @@ export function mergeTemplates(
     console.error(error);
     return false;
   }
+}
+
+export async function editTemplate(templateName: string): Promise<boolean> {
+  if (!isGRCInstalled()) {
+    return false;
+  }
+  const templatesPath = getTemplatesPath();
+  if (!templatesPath) {
+    return false;
+  }
+  const document = await vscode.workspace.openTextDocument(
+    join(templatesPath, templateName)
+  );
+  if (!document) {
+    return false;
+  }
+  vscode.window.showTextDocument(document);
+  return true;
 }
 
 /*

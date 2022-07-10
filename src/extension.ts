@@ -14,6 +14,7 @@ import {
   getUser,
   createTemplate,
   mergeTemplates,
+  editTemplate,
 } from "./grc/commands";
 import { showAuthenticationMessage } from "./verifications/actions";
 import {
@@ -158,14 +159,10 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
         const templates = getTemplates();
-        if (templates === null) {
+        if (!templates || templates.length === 0) {
           vscode.window.showErrorMessage(
-            "Error: An unexpected error occurred. Try again later."
+            "Error: No templates found. Please create a template first."
           );
-          return;
-        }
-        if (templates.length === 0) {
-          vscode.window.showInformationMessage("You have no templates to use.");
           return;
         }
         const templateName = await vscode.window.showQuickPick(templates, {
@@ -295,6 +292,34 @@ export function activate(context: vscode.ExtensionContext) {
             allTemplates.splice(allTemplates.indexOf(templateName), 1);
           }
         }
+      }
+    )
+  );
+  /*
+    Command: Edit Template.
+  */
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      ExtensionCommands.editTemplate,
+      async () => {
+        if (!checkGRCInstallation()) {
+          return;
+        }
+        if (!checkGRCVersion()) {
+          return;
+        }
+        const templates = getTemplates();
+        if (!templates || templates.length === 0) {
+          vscode.window.showInformationMessage("You have no templates to use.");
+          return;
+        }
+        const templateName = await vscode.window.showQuickPick(templates, {
+          placeHolder: "Choose a template to edit:",
+        });
+        if (!templateName) {
+          return;
+        }
+        await editTemplate(templateName);
       }
     )
   );
