@@ -13,6 +13,7 @@ import {
   addCollaborator,
   getUser,
   createTemplate,
+  mergeTemplates,
 } from "./grc/commands";
 import { showAuthenticationMessage } from "./verifications/actions";
 import {
@@ -35,6 +36,8 @@ export enum ExtensionCommands {
   authenticate = "grc.authenticate",
   startRepository = "grc.start-repository",
   createTemplate = "grc.create-template",
+  mergeTemplates = "grc.merge-templates",
+  editTemplate = "grc.edit-template",
   addCollaborator = "grc.add-collaborator",
 }
 
@@ -54,7 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
     checkGRCVersion(true);
   }
   /*
-    Command 1: Install GRC.
+    Command: Install GRC.
   */
   context.subscriptions.push(
     vscode.commands.registerCommand(ExtensionCommands.installGRC, async () => {
@@ -95,7 +98,7 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
   /*
-    Command 2: Authenticate.
+    Command: Authenticate.
   */
   context.subscriptions.push(
     vscode.commands.registerCommand(
@@ -130,7 +133,7 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
   /*
-    Command 3: Start Repository.
+    Command: Start Repository.
   */
   context.subscriptions.push(
     vscode.commands.registerCommand(
@@ -222,7 +225,7 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
   /*
-    Command 4: Create Template.
+    Command: Create Template.
   */
   context.subscriptions.push(
     vscode.commands.registerCommand(ExtensionCommands.createTemplate, () => {
@@ -239,7 +242,64 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
   /*
-    Command 5: Add Collaborator.
+    Command: Merge Templates.
+  */
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      ExtensionCommands.mergeTemplates,
+      async () => {
+        if (!checkGRCInstallation()) {
+          return;
+        }
+        if (!checkGRCVersion()) {
+          return;
+        }
+        const allTemplates = getTemplates();
+        if (!allTemplates || allTemplates.length === 0) {
+          vscode.window.showInformationMessage("You have no templates to use.");
+          return;
+        }
+        allTemplates.push("Done");
+        const templatesToMerge: string[] = [];
+        while (true) {
+          const templateName = await vscode.window.showQuickPick(allTemplates, {
+            placeHolder: 'Choose templates to merge, then click "Done":',
+            title: `Templates being used: ${templatesToMerge.join(", ")}`,
+          });
+          if (!templateName) {
+            return;
+          }
+          if (templateName === "Done") {
+            if (templatesToMerge.length === 0) {
+              return;
+            }
+            const outputFileName = await vscode.window.showInputBox({
+              placeHolder: "Enter a name for the merged template:",
+            });
+            if (!outputFileName) {
+              return;
+            }
+            const merged = mergeTemplates(templatesToMerge, outputFileName);
+            if (merged) {
+              vscode.window.showInformationMessage(
+                `Templates merged successfully.`
+              );
+            } else {
+              vscode.window.showErrorMessage(
+                `Error: Failed to merge templates.`
+              );
+            }
+            return;
+          } else {
+            templatesToMerge.push(templateName);
+            allTemplates.splice(allTemplates.indexOf(templateName), 1);
+          }
+        }
+      }
+    )
+  );
+  /*
+    Command: Add Collaborator.
   */
   context.subscriptions.push(
     vscode.commands.registerCommand(
@@ -258,8 +318,9 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
         const repoName = await vscode.window.showInputBox({
-          placeHolder: `(${getUser()?.username
-            }) Enter the name of the remote repository:`,
+          placeHolder: `(${
+            getUser()?.username
+          }) Enter the name of the remote repository:`,
         });
         if (!repoName) {
           return;

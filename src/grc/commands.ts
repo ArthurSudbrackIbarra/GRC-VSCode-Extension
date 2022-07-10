@@ -4,10 +4,6 @@ import { readdirSync } from "fs";
 import { join } from "path";
 import { grcExecutablePath } from "./executable";
 import { isGRCInstalled } from "./installation";
-import {
-  getPreference,
-  UserPreferences,
-} from "../configurations/user-preferences";
 
 class GRCCommands {
   static readonly authenticate = `"${grcExecutablePath.path}" authenticate`;
@@ -17,6 +13,7 @@ class GRCCommands {
   static readonly chooseTemplate = `"${grcExecutablePath.path}" temp choose`;
   // generateTemplate is applied directly to the user's VSCode terminal.
   static readonly generateTemplate = "grc temp generate";
+  static readonly mergeTemplates = `"${grcExecutablePath.path}" temp merge`;
   static readonly getRepoURL = `"${grcExecutablePath.path}" remote url`;
   static readonly addCollaborator = `"${grcExecutablePath.path}" remote add-collab`;
 }
@@ -193,7 +190,7 @@ export function chooseTemplate(
   }
   try {
     execSync(
-      `${GRCCommands.chooseTemplate} ${templateName} -n "${repoName}" -d "${repoDescription}" -i true`,
+      `${GRCCommands.chooseTemplate} ${templateName} -n "${repoName}" -d "${repoDescription}" --include_content true`,
       {
         cwd: workingDirectory,
       }
@@ -206,7 +203,7 @@ export function chooseTemplate(
 }
 
 export function createTemplate(): boolean {
-  if (!isGRCInstalled() || !grcExecutablePath.path) {
+  if (!isGRCInstalled()) {
     return false;
   }
   const terminal = vscode.window.createTerminal({
@@ -215,6 +212,26 @@ export function createTemplate(): boolean {
   terminal.sendText(GRCCommands.generateTemplate);
   terminal.show();
   return true;
+}
+
+export function mergeTemplates(
+  templateNames: string[],
+  outputFileName: string
+): boolean {
+  if (!isGRCInstalled()) {
+    return false;
+  }
+  try {
+    execSync(
+      `${GRCCommands.mergeTemplates} ${templateNames.join(
+        " "
+      )} -o ${outputFileName} --ignore_conflicts`
+    );
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 }
 
 /*
