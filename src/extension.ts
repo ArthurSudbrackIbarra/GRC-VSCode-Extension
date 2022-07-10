@@ -117,7 +117,7 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
         const accessToken = await vscode.window.showInputBox({
-          prompt: "Enter your GitHub access token:",
+          title: "Enter your GitHub access token.",
           password: true,
         });
         if (!accessToken) {
@@ -129,7 +129,7 @@ export function activate(context: vscode.ExtensionContext) {
           updateAuthenticationStatusBar(true, `GRC (${getUser()?.username})`);
         } else {
           vscode.window.showErrorMessage(
-            "(GRC) Authentication failed. Your access token is invalid."
+            "Authentication failed. Your access token is invalid."
           );
         }
       }
@@ -168,20 +168,19 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
         const templateName = await vscode.window.showQuickPick(templates, {
-          placeHolder: "Choose a template to use:",
+          title: "Choose a template to use.",
         });
         if (!templateName) {
           return;
         }
-        const user = getUser();
         const repoName = await vscode.window.showInputBox({
-          placeHolder: `(${user?.username}) Enter a name for the repository:`,
+          title: "Enter a name for the repository.",
         });
         if (!repoName) {
           return;
         }
         const repoDescription = await vscode.window.showInputBox({
-          placeHolder: "Enter a description for the repository:",
+          title: "Enter a description for the repository.",
         });
         if (!repoDescription) {
           return;
@@ -207,7 +206,9 @@ export function activate(context: vscode.ExtensionContext) {
           }
           vscode.window
             .showInformationMessage(
-              `Repository created successfully for account ${user?.username}: ${repoURL}.`,
+              `Repository created successfully for account ${
+                getUser()?.username
+              }: ${repoURL}.`,
               "Open in Browser"
             )
             .then((answer) => {
@@ -258,48 +259,36 @@ export function activate(context: vscode.ExtensionContext) {
           vscode.window.showInformationMessage("You have no templates to use.");
           return;
         }
-        allTemplates.push("Done");
-        const templatesToMerge: string[] = [];
-        while (true) {
-          const templateName = await vscode.window.showQuickPick(allTemplates, {
-            placeHolder: 'Choose templates to merge, then click "Done":',
-            title: `Templates being used: ${templatesToMerge.join(", ")}`,
-          });
-          if (!templateName) {
-            return;
+        const templatesToMerge = await vscode.window.showQuickPick(
+          allTemplates,
+          {
+            title: "Check the templates to be merged.",
+            canPickMany: true,
           }
-          if (templateName === "Done") {
-            if (templatesToMerge.length === 0) {
-              return;
-            }
-            const outputFileName = await vscode.window.showInputBox({
-              placeHolder: "Enter a name for the merged template:",
+        );
+        if (!templatesToMerge || templatesToMerge.length === 0) {
+          return;
+        }
+        const outputFileName = await vscode.window.showInputBox({
+          title: "Enter a name for the merged template.",
+        });
+        if (!outputFileName) {
+          return;
+        }
+        const merged = mergeTemplates(templatesToMerge, outputFileName);
+        if (merged) {
+          vscode.window
+            .showInformationMessage(
+              "Templates merged successfully.",
+              "Show Template"
+            )
+            .then(async (answer) => {
+              if (answer) {
+                await editTemplate(outputFileName);
+              }
             });
-            if (!outputFileName) {
-              return;
-            }
-            const merged = mergeTemplates(templatesToMerge, outputFileName);
-            if (merged) {
-              vscode.window
-                .showInformationMessage(
-                  "Templates merged successfully.",
-                  "Show Template"
-                )
-                .then(async (answer) => {
-                  if (answer) {
-                    await editTemplate(outputFileName);
-                  }
-                });
-            } else {
-              vscode.window.showErrorMessage(
-                "Error: Failed to merge templates."
-              );
-            }
-            return;
-          } else {
-            templatesToMerge.push(templateName);
-            allTemplates.splice(allTemplates.indexOf(templateName), 1);
-          }
+        } else {
+          vscode.window.showErrorMessage("Error: Failed to merge templates.");
         }
       }
     )
@@ -323,7 +312,7 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
         const templateName = await vscode.window.showQuickPick(templates, {
-          placeHolder: "Choose a template to delete:",
+          title: "Choose a template to delete.",
         });
         if (!templateName) {
           return;
@@ -360,7 +349,7 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
         const templateName = await vscode.window.showQuickPick(templates, {
-          placeHolder: "Choose a template to edit:",
+          title: "Choose a template to edit.",
         });
         if (!templateName) {
           return;
@@ -389,15 +378,13 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
         const repoName = await vscode.window.showInputBox({
-          placeHolder: `(${
-            getUser()?.username
-          }) Enter the name of the remote repository:`,
+          title: "Enter the name of the remote repository.",
         });
         if (!repoName) {
           return;
         }
         const collaboratorName = await vscode.window.showInputBox({
-          placeHolder: "Enter the name of the collaborator:",
+          title: "Enter the name of the collaborator.",
         });
         if (!collaboratorName) {
           return;
@@ -405,7 +392,7 @@ export function activate(context: vscode.ExtensionContext) {
         const permission = await vscode.window.showQuickPick(
           availablePermissions,
           {
-            placeHolder: `Choose the permission to give to ${collaboratorName}:`,
+            title: `Choose the permission to give to ${collaboratorName}.`,
           }
         );
         if (!permission) {

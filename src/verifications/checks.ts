@@ -41,7 +41,7 @@ export function setRestartVSCodeFlag(flag: boolean): void {
 export function checkRestartVSCode(): boolean {
   if (restartVSCodeFlag) {
     vscode.window.showWarningMessage(
-      "(GRC) Please restart Visual Studio Code before using GRC extension."
+      "Please restart Visual Studio Code before using GRC extension."
     );
     return false;
   }

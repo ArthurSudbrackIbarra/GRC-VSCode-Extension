@@ -10,7 +10,10 @@ An extension for using [GRC](https://github.com/ArthurSudbrackIbarra/GitHub-Repo
   - [GRC: Add Collaborator to Remote Repository](#grc-add-collaborator-to-remote-repository)
   - [GRC: Authenticate](#grc-authenticate)
   - [GRC: Create Template](#grc-create-template)
+  - [GRC: Delete Template](#grc-delete-template)
+  - [GRC: Edit Template](#grc-edit-template)
   - [GRC: Install GRC](#grc-install-grc)
+  - [GRC: Merge Templates](#grc-merge-templates)
   - [GRC: Start GitHub Repository Here](#grc-start-github-repository-here)
 - [Configurations](#configurations)
 - [Requirements](#requirements)
@@ -19,6 +22,7 @@ An extension for using [GRC](https://github.com/ArthurSudbrackIbarra/GitHub-Repo
   - [0.0.1](#001)
   - [0.0.2](#002)
   - [0.0.3](#003)
+  - [0.0.4](#004)
 
 ## Download
 
@@ -53,11 +57,19 @@ Use this command to authenticate to GitHub with GRC. You must use this command b
 
 ### GRC: Create Template
 
-Use this command to create a GRC template. Visual Studio Code will open a terminal instance and run the `grc temp generate` command for you.
+Use this command to create a GRC template. Visual Studio Code will open a terminal instance and run the 'grc temp generate' command for you.
 
 <p align="center">
     <img src="assets/readme-images/grc-create-template.png" alt="GRC Create Template">
 </p>
+
+### GRC: Delete Template
+
+Use this command to delete a GRC template.
+
+### GRC: Edit Template
+
+Use this command to edit a GRC template. The template YAML file will be opened in your Visual Studio Code workspace.
 
 ### GRC: Install GRC
 
@@ -65,6 +77,14 @@ Use this command to install GRC in your machine in case you don't have it yet. Y
 
 <p align="center">
     <img src="assets/readme-images/grc-install-grc.png" alt="GRC Install GRC">
+</p>
+
+### GRC: Merge Templates
+
+Use this command to turn _N_ or more GRC templates into 1. Collaborators from all the chosen templates are joined, forming a single template.
+
+<p align="center">
+    <img src="assets/readme-images/grc-merge-templates.png" alt="GRC Merge Templates">
 </p>
 
 ### GRC: Start GitHub Repository Here
@@ -85,6 +105,8 @@ You can change GRC Configurations by clicking Settings -> Extensions -> GitHub R
 
 - `grc.allowPre-checksOnStartup`: Whether or not to allow pre-checks on startup. Extension takes longer to load but commands will take less time to execute when first used.
 
+- `grc.showCommandsBeingUsed`: Whether or not to show which GRC commands are being used. Good for learning the CLI commands.
+
 <p align="center">
     <img src="assets/readme-images/grc-configurations.png" alt="GRC Configurations">
 </p>
@@ -98,6 +120,7 @@ In order to use GRC extension, you need to have GRC installed in your machine. F
 |   v3.0.1    |              v0.0.1              |
 |   v3.0.2    |              v0.0.2              |
 |   v3.0.3    |              v0.0.3              |
+|   v3.0.4    |              v0.0.4              |
 
 ## Known Issues
 
@@ -133,10 +156,26 @@ Technical Changes:
 
 ### 0.0.3
 
-- GRC extension is now working on Ubuntu and macOS, it was not working previously.
+User Experience:
 
 - GRC installation is now done through a Visual Studio Code terminal (more feedback).
 
 - Added status bar item that shows if the user is authenticated or not.
 
 - Added customizable configurations to the extension.
+
+Technical Changes:
+
+- GRC extension is now working on Ubuntu and macOS, it was not working previously.
+
+### 0.0.4
+
+Commands added:
+
+- Edit GRC Template
+- Delete GRC Template
+- Merge GRC Templates
+
+User Experience:
+
+- Added titles instead of placeholders when user input is needed.

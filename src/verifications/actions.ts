@@ -38,7 +38,7 @@ export function showAuthenticationMessage(
   if (user) {
     if (!onlyOnFailure) {
       vscode.window.showInformationMessage(
-        `(GRC) Authenticated as ${user.username}.`
+        `Authenticated as ${user.username}.`
       );
     }
     return true;
@@ -46,7 +46,7 @@ export function showAuthenticationMessage(
     if (shouldShowMessages) {
       vscode.window
         .showErrorMessage(
-          "(GRC) Authentication failed, your access token is either not configured yet or it has changed/expired.",
+          "Authentication failed, your access token is either not configured yet or it has changed/expired.",
           "Authenticate"
         )
         .then((answer) => {
