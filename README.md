@@ -156,6 +156,12 @@ Technical Changes:
 
 ### 0.0.3
 
+Configurations added:
+
+- `grc.showAuthenticationErrorMessages`
+- `grc.showAuthenticationStatusBar`
+- `grc.allowPre-checksOnStartup`
+
 User Experience:
 
 - GRC installation is now done through a Visual Studio Code terminal (more feedback).
@@ -175,6 +181,10 @@ Commands added:
 - Edit GRC Template
 - Delete GRC Template
 - Merge GRC Templates
+
+Configurations added:
+
+- `grc.showCommandsBeingUsed`
 
 User Experience:
 
