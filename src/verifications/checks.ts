@@ -72,7 +72,7 @@ export function checkUserAthenticated(
 // This variable prevents the version from being checked again if it was already previously correct.
 let grcVersion: string | null = null;
 
-const VALID_GRC_VERSION = "v3.0.3";
+const VALID_GRC_VERSION = "v3.0.4";
 
 export function checkGRCVersion(
   suppressErrorMessages: boolean = false
