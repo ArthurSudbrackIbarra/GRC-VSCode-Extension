@@ -4,6 +4,10 @@ import { readdirSync } from "fs";
 import { join } from "path";
 import { grcExecutablePath } from "./executable";
 import { isGRCInstalled } from "./installation";
+import {
+  getPreference,
+  UserPreferences,
+} from "../configurations/user-preferences";
 
 class GRCCommands {
   static readonly authenticate = `"${grcExecutablePath.path}" authenticate`;
@@ -18,6 +22,17 @@ class GRCCommands {
   static readonly deleteTemplate = `"${grcExecutablePath.path}" temp delete`;
   static readonly getRepoURL = `"${grcExecutablePath.path}" remote url`;
   static readonly addCollaborator = `"${grcExecutablePath.path}" remote add-collab`;
+}
+
+function showCommandBeingUsed(command: string): void {
+  const shouldShowCommand = getPreference(
+    UserPreferences.showCommandsBeingUsed
+  );
+  if (!shouldShowCommand) {
+    return;
+  }
+  const formattedCommand = `grc ${command.slice(command.indexOf(" ") + 1)}`;
+  vscode.window.showInformationMessage(`Executed: ${formattedCommand}`);
 }
 
 /*
@@ -42,7 +57,9 @@ export function authenticate(accessToken: string): boolean {
     return false;
   }
   try {
-    execSync(`${GRCCommands.authenticate} ${accessToken}`);
+    const command = `${GRCCommands.authenticate} ${accessToken}`;
+    showCommandBeingUsed(command.replace(accessToken, "*****"));
+    execSync(command);
     return true;
   } catch (error) {
     console.error(error);
@@ -84,7 +101,9 @@ export function updateGRC(): boolean {
     return false;
   }
   try {
-    execSync(GRCCommands.update);
+    const command = GRCCommands.update;
+    showCommandBeingUsed(command);
+    execSync(command);
     return true;
   } catch (error) {
     console.error(error);
@@ -197,12 +216,11 @@ export function chooseTemplate(
     return false;
   }
   try {
-    execSync(
-      `${GRCCommands.chooseTemplate} ${templateName} -n "${repoName}" -d "${repoDescription}" --include_content true`,
-      {
-        cwd: workingDirectory,
-      }
-    );
+    const command = `${GRCCommands.chooseTemplate} ${templateName} -n "${repoName}" -d "${repoDescription}" --include_content true`;
+    showCommandBeingUsed(command);
+    execSync(command, {
+      cwd: workingDirectory,
+    });
     return true;
   } catch (error) {
     console.error(error);
@@ -235,11 +253,11 @@ export function mergeTemplates(
     return false;
   }
   try {
-    execSync(
-      `${GRCCommands.mergeTemplates} ${templateNames.join(
-        " "
-      )} -o ${outputFileName} --ignore_conflicts`
-    );
+    const command = `${GRCCommands.mergeTemplates} ${templateNames.join(
+      " "
+    )} -o ${outputFileName} --ignore_conflicts`;
+    showCommandBeingUsed(command);
+    execSync(command);
     return true;
   } catch (error) {
     console.error(error);
@@ -273,7 +291,9 @@ export function deleteTemplate(templateName: string): boolean {
     return false;
   }
   try {
-    execSync(`${GRCCommands.deleteTemplate} ${templateName}`);
+    const command = `${GRCCommands.deleteTemplate} ${templateName}`;
+    showCommandBeingUsed(command);
+    execSync(command);
     return true;
   } catch (error) {
     console.error(error);
@@ -317,9 +337,9 @@ export function addCollaborator(
     permission = "admin";
   }
   try {
-    execSync(
-      `${GRCCommands.addCollaborator} ${repoName} ${collaborator} ${permission}`
-    );
+    const command = `${GRCCommands.addCollaborator} ${repoName} ${collaborator} ${permission}`;
+    showCommandBeingUsed(command);
+    execSync(command);
     return true;
   } catch (error) {
     console.error(error);
