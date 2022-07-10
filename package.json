@@ -48,6 +48,16 @@
 				"title": "Create GRC Template."
 			},
 			{
+				"command": "grc.merge-templates",
+				"category": "GRC",
+				"title": "Merge Templates."
+			},
+			{
+				"command": "grc.edit-template",
+				"category": "GRC",
+				"title": "Edit Template."
+			},
+			{
 				"command": "grc.add-collaborator",
 				"category": "GRC",
 				"title": "Add Collaborator to Remote Repository."
