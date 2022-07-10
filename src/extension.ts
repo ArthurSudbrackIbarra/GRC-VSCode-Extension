@@ -13,6 +13,9 @@ import {
   addCollaborator,
   getUser,
   createTemplate,
+  mergeTemplates,
+  editTemplate,
+  deleteTemplate,
 } from "./grc/commands";
 import { showAuthenticationMessage } from "./verifications/actions";
 import {
@@ -35,6 +38,9 @@ export enum ExtensionCommands {
   authenticate = "grc.authenticate",
   startRepository = "grc.start-repository",
   createTemplate = "grc.create-template",
+  mergeTemplates = "grc.merge-templates",
+  editTemplate = "grc.edit-template",
+  deleteTemplate = "grc.delete-template",
   addCollaborator = "grc.add-collaborator",
 }
 
@@ -54,7 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
     checkGRCVersion(true);
   }
   /*
-    Command 1: Install GRC.
+    Command: Install GRC.
   */
   context.subscriptions.push(
     vscode.commands.registerCommand(ExtensionCommands.installGRC, async () => {
@@ -95,7 +101,7 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
   /*
-    Command 2: Authenticate.
+    Command: Authenticate.
   */
   context.subscriptions.push(
     vscode.commands.registerCommand(
@@ -111,7 +117,7 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
         const accessToken = await vscode.window.showInputBox({
-          prompt: "Enter your GitHub access token:",
+          title: "Enter your GitHub access token.",
           password: true,
         });
         if (!accessToken) {
@@ -123,14 +129,14 @@ export function activate(context: vscode.ExtensionContext) {
           updateAuthenticationStatusBar(true, `GRC (${getUser()?.username})`);
         } else {
           vscode.window.showErrorMessage(
-            "(GRC) Authentication failed. Your access token is invalid."
+            "Authentication failed. Your access token is invalid."
           );
         }
       }
     )
   );
   /*
-    Command 3: Start Repository.
+    Command: Start Repository.
   */
   context.subscriptions.push(
     vscode.commands.registerCommand(
@@ -155,31 +161,26 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
         const templates = getTemplates();
-        if (templates === null) {
+        if (!templates || templates.length === 0) {
           vscode.window.showErrorMessage(
-            "Error: An unexpected error occurred. Try again later."
+            "Error: No templates found. Please create a template first."
           );
           return;
         }
-        if (templates.length === 0) {
-          vscode.window.showInformationMessage("You have no templates to use.");
-          return;
-        }
         const templateName = await vscode.window.showQuickPick(templates, {
-          placeHolder: "Choose a template to use:",
+          title: "Choose a template to use.",
         });
         if (!templateName) {
           return;
         }
-        const user = getUser();
         const repoName = await vscode.window.showInputBox({
-          placeHolder: `(${user?.username}) Enter a name for the repository:`,
+          title: "Enter a name for the repository.",
         });
         if (!repoName) {
           return;
         }
         const repoDescription = await vscode.window.showInputBox({
-          placeHolder: "Enter a description for the repository:",
+          title: "Enter a description for the repository.",
         });
         if (!repoDescription) {
           return;
@@ -205,7 +206,9 @@ export function activate(context: vscode.ExtensionContext) {
           }
           vscode.window
             .showInformationMessage(
-              `Repository created successfully for account ${user?.username}: ${repoURL}.`,
+              `Repository created successfully for account ${
+                getUser()?.username
+              }: ${repoURL}.`,
               "Open in Browser"
             )
             .then((answer) => {
@@ -222,7 +225,7 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
   /*
-    Command 4: Create Template.
+    Command: Create Template.
   */
   context.subscriptions.push(
     vscode.commands.registerCommand(ExtensionCommands.createTemplate, () => {
@@ -239,7 +242,124 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
   /*
-    Command 5: Add Collaborator.
+    Command: Merge Templates.
+  */
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      ExtensionCommands.mergeTemplates,
+      async () => {
+        if (!checkGRCInstallation()) {
+          return;
+        }
+        if (!checkGRCVersion()) {
+          return;
+        }
+        const allTemplates = getTemplates();
+        if (!allTemplates || allTemplates.length === 0) {
+          vscode.window.showInformationMessage("You have no templates to use.");
+          return;
+        }
+        const templatesToMerge = await vscode.window.showQuickPick(
+          allTemplates,
+          {
+            title: "Check the templates to be merged.",
+            canPickMany: true,
+          }
+        );
+        if (!templatesToMerge || templatesToMerge.length === 0) {
+          return;
+        }
+        const outputFileName = await vscode.window.showInputBox({
+          title: "Enter a name for the merged template.",
+        });
+        if (!outputFileName) {
+          return;
+        }
+        const merged = mergeTemplates(templatesToMerge, outputFileName);
+        if (merged) {
+          vscode.window
+            .showInformationMessage(
+              "Templates merged successfully.",
+              "Show Template"
+            )
+            .then(async (answer) => {
+              if (answer) {
+                await editTemplate(outputFileName);
+              }
+            });
+        } else {
+          vscode.window.showErrorMessage("Error: Failed to merge templates.");
+        }
+      }
+    )
+  );
+  /*
+    Command: Delete Template.
+  */
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      ExtensionCommands.deleteTemplate,
+      async () => {
+        if (!checkGRCInstallation()) {
+          return;
+        }
+        if (!checkGRCVersion()) {
+          return;
+        }
+        const templates = getTemplates();
+        if (!templates || templates.length === 0) {
+          vscode.window.showInformationMessage("You have no templates to use.");
+          return;
+        }
+        const templateName = await vscode.window.showQuickPick(templates, {
+          title: "Choose a template to delete.",
+        });
+        if (!templateName) {
+          return;
+        }
+        const deleted = deleteTemplate(templateName);
+        if (deleted) {
+          vscode.window.showInformationMessage(
+            `Template ${templateName} deleted successfully.`
+          );
+        } else {
+          vscode.window.showErrorMessage(
+            `Error: Failed to delete template ${templateName}.`
+          );
+        }
+      }
+    )
+  );
+  /*
+    Command: Edit Template.
+  */
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      ExtensionCommands.editTemplate,
+      async () => {
+        if (!checkGRCInstallation()) {
+          return;
+        }
+        if (!checkGRCVersion()) {
+          return;
+        }
+        const templates = getTemplates();
+        if (!templates || templates.length === 0) {
+          vscode.window.showInformationMessage("You have no templates to use.");
+          return;
+        }
+        const templateName = await vscode.window.showQuickPick(templates, {
+          title: "Choose a template to edit.",
+        });
+        if (!templateName) {
+          return;
+        }
+        await editTemplate(templateName);
+      }
+    )
+  );
+  /*
+    Command: Add Collaborator.
   */
   context.subscriptions.push(
     vscode.commands.registerCommand(
@@ -258,14 +378,13 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
         const repoName = await vscode.window.showInputBox({
-          placeHolder: `(${getUser()?.username
-            }) Enter the name of the remote repository:`,
+          title: "Enter the name of the remote repository.",
         });
         if (!repoName) {
           return;
         }
         const collaboratorName = await vscode.window.showInputBox({
-          placeHolder: "Enter the name of the collaborator:",
+          title: "Enter the name of the collaborator.",
         });
         if (!collaboratorName) {
           return;
@@ -273,7 +392,7 @@ export function activate(context: vscode.ExtensionContext) {
         const permission = await vscode.window.showQuickPick(
           availablePermissions,
           {
-            placeHolder: `Choose the permission to give to ${collaboratorName}:`,
+            title: `Choose the permission to give to ${collaboratorName}.`,
           }
         );
         if (!permission) {

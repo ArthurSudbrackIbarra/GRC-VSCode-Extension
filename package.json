@@ -48,6 +48,21 @@
 				"title": "Create GRC Template."
 			},
 			{
+				"command": "grc.merge-templates",
+				"category": "GRC",
+				"title": "Merge Templates."
+			},
+			{
+				"command": "grc.edit-template",
+				"category": "GRC",
+				"title": "Edit Template."
+			},
+			{
+				"command": "grc.delete-template",
+				"category": "GRC",
+				"title": "Delete Template."
+			},
+			{
 				"command": "grc.add-collaborator",
 				"category": "GRC",
 				"title": "Add Collaborator to Remote Repository."
@@ -71,6 +86,11 @@
 						"type": "boolean",
 						"default": true,
 						"description": "Whether or not to allow pre-checks on startup. Extension takes longer to load but commands will take less time to execute when first used."
+					},
+					"grc.showCommandsBeingUsed": {
+						"type": "boolean",
+						"default": false,
+						"description": "Whether or not to show which GRC commands are being used. Good for learning the CLI commands."
 					}
 				}
 			}

@@ -17,8 +17,22 @@ class GRCCommands {
   static readonly chooseTemplate = `"${grcExecutablePath.path}" temp choose`;
   // generateTemplate is applied directly to the user's VSCode terminal.
   static readonly generateTemplate = "grc temp generate";
+  static readonly mergeTemplates = `"${grcExecutablePath.path}" temp merge`;
+  static readonly editTemplate = `"${grcExecutablePath.path}" temp edit`;
+  static readonly deleteTemplate = `"${grcExecutablePath.path}" temp delete`;
   static readonly getRepoURL = `"${grcExecutablePath.path}" remote url`;
   static readonly addCollaborator = `"${grcExecutablePath.path}" remote add-collab`;
+}
+
+function showCommandBeingUsed(command: string): void {
+  const shouldShowCommand = getPreference(
+    UserPreferences.showCommandsBeingUsed
+  );
+  if (!shouldShowCommand) {
+    return;
+  }
+  const formattedCommand = `grc ${command.slice(command.indexOf(" ") + 1)}`;
+  vscode.window.showInformationMessage(`Executed: ${formattedCommand}`);
 }
 
 /*
@@ -43,7 +57,9 @@ export function authenticate(accessToken: string): boolean {
     return false;
   }
   try {
-    execSync(`${GRCCommands.authenticate} ${accessToken}`);
+    const command = `${GRCCommands.authenticate} ${accessToken}`;
+    showCommandBeingUsed(command.replace(accessToken, "*****"));
+    execSync(command);
     return true;
   } catch (error) {
     console.error(error);
@@ -85,7 +101,9 @@ export function updateGRC(): boolean {
     return false;
   }
   try {
-    execSync(GRCCommands.update);
+    const command = GRCCommands.update;
+    showCommandBeingUsed(command);
+    execSync(command);
     return true;
   } catch (error) {
     console.error(error);
@@ -125,7 +143,7 @@ export function getUser(): GitHubUser | null {
       avatarURL: "",
     };
     for (const line of userInfoLines) {
-      const splittedLine = line.split(":", 2);
+      const splittedLine = line.split(/:(.*)/s);
       switch (splittedLine[0].toUpperCase()) {
         case "USERNAME":
           {
@@ -160,19 +178,25 @@ export function getUser(): GitHubUser | null {
   Templates.
 */
 
-export function getTemplates(): string[] | null {
+function getTemplatesPath(): string | null {
   if (!isGRCInstalled() || !grcExecutablePath.path) {
     return null;
   }
-  let templatesPath = "";
   if (process.platform === "win32") {
-    templatesPath = join(grcExecutablePath.path, "..", "templates");
+    return join(grcExecutablePath.path, "..", "templates");
   } else if (process.platform === "linux" || process.platform === "darwin") {
-    templatesPath = "/opt/grc/GitHub-Repo-Creator/templates";
+    return "/opt/grc/GitHub-Repo-Creator/templates";
   } else {
     return null;
   }
+}
+
+export function getTemplates(): string[] | null {
   try {
+    const templatesPath = getTemplatesPath();
+    if (!templatesPath) {
+      return null;
+    }
     return readdirSync(templatesPath).filter((fileName) =>
       fileName.endsWith(".yaml")
     );
@@ -192,12 +216,11 @@ export function chooseTemplate(
     return false;
   }
   try {
-    execSync(
-      `${GRCCommands.chooseTemplate} ${templateName} -n "${repoName}" -d "${repoDescription}" -i true`,
-      {
-        cwd: workingDirectory,
-      }
-    );
+    const command = `${GRCCommands.chooseTemplate} ${templateName} -n "${repoName}" -d "${repoDescription}" --include_content true`;
+    showCommandBeingUsed(command);
+    execSync(command, {
+      cwd: workingDirectory,
+    });
     return true;
   } catch (error) {
     console.error(error);
@@ -206,15 +229,76 @@ export function chooseTemplate(
 }
 
 export function createTemplate(): boolean {
-  if (!isGRCInstalled() || !grcExecutablePath.path) {
+  if (!isGRCInstalled()) {
     return false;
   }
-  const terminal = vscode.window.createTerminal({
-    name: "Generate GRC Template",
-  });
-  terminal.sendText(GRCCommands.generateTemplate);
-  terminal.show();
+  try {
+    const terminal = vscode.window.createTerminal({
+      name: "Generate GRC Template",
+    });
+    terminal.sendText(GRCCommands.generateTemplate);
+    terminal.show();
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+export function mergeTemplates(
+  templateNames: string[],
+  outputFileName: string
+): boolean {
+  if (!isGRCInstalled()) {
+    return false;
+  }
+  try {
+    const command = `${GRCCommands.mergeTemplates} ${templateNames.join(
+      " "
+    )} -o ${outputFileName} --ignore_conflicts`;
+    showCommandBeingUsed(command);
+    execSync(command);
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+export async function editTemplate(templateName: string): Promise<boolean> {
+  if (!isGRCInstalled()) {
+    return false;
+  }
+  if (!templateName.endsWith(".yaml")) {
+    templateName += ".yaml";
+  }
+  const templatesPath = getTemplatesPath();
+  if (!templatesPath) {
+    return false;
+  }
+  const document = await vscode.workspace.openTextDocument(
+    join(templatesPath, templateName)
+  );
+  if (!document) {
+    return false;
+  }
+  vscode.window.showTextDocument(document);
   return true;
+}
+
+export function deleteTemplate(templateName: string): boolean {
+  if (!isGRCInstalled()) {
+    return false;
+  }
+  try {
+    const command = `${GRCCommands.deleteTemplate} ${templateName}`;
+    showCommandBeingUsed(command);
+    execSync(command);
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 }
 
 /*
@@ -253,9 +337,9 @@ export function addCollaborator(
     permission = "admin";
   }
   try {
-    execSync(
-      `${GRCCommands.addCollaborator} ${repoName} ${collaborator} ${permission}`
-    );
+    const command = `${GRCCommands.addCollaborator} ${repoName} ${collaborator} ${permission}`;
+    showCommandBeingUsed(command);
+    execSync(command);
     return true;
   } catch (error) {
     console.error(error);
