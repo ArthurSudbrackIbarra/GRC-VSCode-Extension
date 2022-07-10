@@ -58,6 +58,11 @@
 				"title": "Edit Template."
 			},
 			{
+				"command": "grc.delete-template",
+				"category": "GRC",
+				"title": "Delete Template."
+			},
+			{
 				"command": "grc.add-collaborator",
 				"category": "GRC",
 				"title": "Add Collaborator to Remote Repository."

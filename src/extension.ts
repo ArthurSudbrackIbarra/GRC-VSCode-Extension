@@ -15,6 +15,7 @@ import {
   createTemplate,
   mergeTemplates,
   editTemplate,
+  deleteTemplate,
 } from "./grc/commands";
 import { showAuthenticationMessage } from "./verifications/actions";
 import {
@@ -39,6 +40,7 @@ export enum ExtensionCommands {
   createTemplate = "grc.create-template",
   mergeTemplates = "grc.merge-templates",
   editTemplate = "grc.edit-template",
+  deleteTemplate = "grc.delete-template",
   addCollaborator = "grc.add-collaborator",
 }
 
@@ -278,12 +280,19 @@ export function activate(context: vscode.ExtensionContext) {
             }
             const merged = mergeTemplates(templatesToMerge, outputFileName);
             if (merged) {
-              vscode.window.showInformationMessage(
-                `Templates merged successfully.`
-              );
+              vscode.window
+                .showInformationMessage(
+                  "Templates merged successfully.",
+                  "Show Template"
+                )
+                .then(async (answer) => {
+                  if (answer) {
+                    await editTemplate(outputFileName);
+                  }
+                });
             } else {
               vscode.window.showErrorMessage(
-                `Error: Failed to merge templates.`
+                "Error: Failed to merge templates."
               );
             }
             return;
@@ -291,6 +300,43 @@ export function activate(context: vscode.ExtensionContext) {
             templatesToMerge.push(templateName);
             allTemplates.splice(allTemplates.indexOf(templateName), 1);
           }
+        }
+      }
+    )
+  );
+  /*
+    Command: Delete Template.
+  */
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      ExtensionCommands.deleteTemplate,
+      async () => {
+        if (!checkGRCInstallation()) {
+          return;
+        }
+        if (!checkGRCVersion()) {
+          return;
+        }
+        const templates = getTemplates();
+        if (!templates || templates.length === 0) {
+          vscode.window.showInformationMessage("You have no templates to use.");
+          return;
+        }
+        const templateName = await vscode.window.showQuickPick(templates, {
+          placeHolder: "Choose a template to delete:",
+        });
+        if (!templateName) {
+          return;
+        }
+        const deleted = deleteTemplate(templateName);
+        if (deleted) {
+          vscode.window.showInformationMessage(
+            `Template ${templateName} deleted successfully.`
+          );
+        } else {
+          vscode.window.showErrorMessage(
+            `Error: Failed to delete template ${templateName}.`
+          );
         }
       }
     )

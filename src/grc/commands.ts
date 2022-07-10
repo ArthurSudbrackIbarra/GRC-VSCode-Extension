@@ -15,6 +15,7 @@ class GRCCommands {
   static readonly generateTemplate = "grc temp generate";
   static readonly mergeTemplates = `"${grcExecutablePath.path}" temp merge`;
   static readonly editTemplate = `"${grcExecutablePath.path}" temp edit`;
+  static readonly deleteTemplate = `"${grcExecutablePath.path}" temp delete`;
   static readonly getRepoURL = `"${grcExecutablePath.path}" remote url`;
   static readonly addCollaborator = `"${grcExecutablePath.path}" remote add-collab`;
 }
@@ -250,6 +251,9 @@ export async function editTemplate(templateName: string): Promise<boolean> {
   if (!isGRCInstalled()) {
     return false;
   }
+  if (!templateName.endsWith(".yaml")) {
+    templateName += ".yaml";
+  }
   const templatesPath = getTemplatesPath();
   if (!templatesPath) {
     return false;
@@ -262,6 +266,19 @@ export async function editTemplate(templateName: string): Promise<boolean> {
   }
   vscode.window.showTextDocument(document);
   return true;
+}
+
+export function deleteTemplate(templateName: string): boolean {
+  if (!isGRCInstalled()) {
+    return false;
+  }
+  try {
+    execSync(`${GRCCommands.deleteTemplate} ${templateName}`);
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 }
 
 /*

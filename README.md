@@ -83,7 +83,7 @@ You can change GRC Configurations by clicking Settings -> Extensions -> GitHub R
 
 - `grc.showAuthenticationStatusBar`: Whether or not to display the user authentication status bar item. (Reload required).
 
-- `"grc.allowPre-checksOnStartup"`: Whether or not to allow pre-checks on startup. Extension takes longer to load but commands will take less time to execute when first used.
+- `grc.allowPre-checksOnStartup`: Whether or not to allow pre-checks on startup. Extension takes longer to load but commands will take less time to execute when first used.
 
 <p align="center">
     <img src="assets/readme-images/grc-configurations.png" alt="GRC Configurations">
